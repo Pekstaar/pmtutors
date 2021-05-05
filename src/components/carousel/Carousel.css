@@ -1,0 +1,32 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  .carousel {
+    display: flex;
+    justify-content: center;
+    /* min-height: "508px"; */
+  }
+  
+  .carousel .slide {
+    height: 600px;
+    /* min-height: "500px"; */
+  }
+  
+  .carousel-status {
+    display: none;
+  }
+  
+  .carousel li {
+    outline: none;
+  }
+  
+  .carousel .thumbs-wrapper {
+    display: none;
+  }
+  
+  .carousel .slide img {
+    max-height: 100%;
+    /* width: auto; */
+  }
