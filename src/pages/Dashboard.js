@@ -1,10 +1,10 @@
-import { Avatar, Button, Grid, makeStyles, Paper } from "@material-ui/core";
+import { Avatar, Button, Grid, Paper } from "@material-ui/core";
 import { Check, Clear, MoreHoriz, Star } from "@material-ui/icons";
 import React from "react";
 import Navbar from "../components/navigation/Navbar";
 import useStyles from "../styling/dashboard.min.js"
 import fb from "../config/fbConfig"
-import {useState, useEffect, useSelector} from "react"
+import { useState, useEffect } from "react"
 import { connect } from "react-redux";
 
 // import { Link } from "react-router-dom";
@@ -15,23 +15,23 @@ const Dashboard = (props) => {
 
   // const {firebase} = useSelector((state) => ({...state}))
 
-  const [state,setState] = useState({})
+  const [state, setState] = useState({})
   // context
-  const getUser = () =>{
-    fb.firestore().collection("clients").doc(props.user.uid).get().
-    then(r => setState({
-      ...r.data()
-    }))
+  const getUser = () => {
+    fb.firestore().collection("clients").doc(props.user.uid).get()
+      .then(r => setState({
+        ...r.data()
+      }))
   }
 
   useEffect(() => {
     getUser()
-  }, []);
+  });
 
-  
+
 
   // destructrue details
-   const { username, email, skills } =  state;
+  const { username, email, skills } = state;
 
   return (
     <>
@@ -247,7 +247,7 @@ const Dashboard = (props) => {
   );
 };
 
-const mapStateToProps = (state) =>{
+const mapStateToProps = (state) => {
   console.log(state)
   return {
     user: state.firebase.auth

@@ -8,46 +8,45 @@ import { Link, Redirect } from "react-router-dom";
 import useStyles from "./css/login.min.js"
 import { connect, useSelector } from "react-redux";
 import { signIn } from "../store/actions/authAction.js";
-import { getClient } from "../store/actions/clientAction.js";
 const Login = (props) => {
   // const {history} = props; 
 
-  const {firebase} = useSelector((state) => ({...state}))
+  const { firebase } = useSelector((state) => ({ ...state }))
 
   const auth = firebase.auth
 
 
-    const classes = useStyles();
-  
-    // auth context
+  const classes = useStyles();
 
-    const [state, setState] = useState({
-      email: "",
-      password: "",
+  // auth context
+
+  const [state, setState] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    props.login(state);
+
+    // history.push("/dashboard");
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setState({
+      ...state,
+      [name]: value,
     });
-  
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        
-        props.login(state);
-       
-        // history.push("/dashboard");
-    };
-  
-    const handleChange = (e) => {
-      const { name, value } = e.target;
-  
-      setState({
-        ...state,
-        [name]: value,
-      });
-    };
-  
-    return (
-      <>
-       { (auth && auth.uid)? 
+  };
 
-        <Redirect to="/dashboard"/> 
+  return (
+    <>
+      { (auth && auth.uid) ?
+
+        <Redirect to="/dashboard" />
 
         :
 
@@ -60,20 +59,20 @@ const Login = (props) => {
                 <Button
                   style={{ padding: "10px 20px", maxWidth: "400px" }}
                   variant="contained"
-                  // onClick={async () => {
-                  //   // NotificationManager.error("Hello", 3000);
-                  //   await loginWithGoogle()
-                  //     .then((r) => {
-                  //       // set global credentials
-                  //       setCredentials({
-                  //         ...credentials,
-                  //         uid: r.user.uid,
-                  //         url: r.user.url,
-                  //       });
-                  //       NotificationManager.success(r.message);
-                  //     })
-                  //     .catch((e) => NotificationManager.error(e.message));
-                  // }}
+                // onClick={async () => {
+                //   // NotificationManager.error("Hello", 3000);
+                //   await loginWithGoogle()
+                //     .then((r) => {
+                //       // set global credentials
+                //       setCredentials({
+                //         ...credentials,
+                //         uid: r.user.uid,
+                //         url: r.user.url,
+                //       });
+                //       NotificationManager.success(r.message);
+                //     })
+                //     .catch((e) => NotificationManager.error(e.message));
+                // }}
                 >
                   <FcGoogle style={{ fontSize: "24px", marginRight: "8px" }} />{" "}
                   Login with Google
@@ -97,7 +96,7 @@ const Login = (props) => {
                     alignItems="flex-end"
                   >
                     <AccountCircle style={{ fontSize: "25px" }} />
-    
+
                     <TextField
                       fullWidth
                       type="email"
@@ -109,7 +108,7 @@ const Login = (props) => {
                     />
                   </Grid>
                   <br />
-    
+
                   {/* Password */}
                   <Grid
                     container
@@ -118,7 +117,7 @@ const Login = (props) => {
                     alignItems="flex-end"
                   >
                     <Lock style={{ fontSize: "25px" }} />
-    
+
                     <TextField
                       fullWidth
                       type="password"
@@ -133,7 +132,7 @@ const Login = (props) => {
                   {/* Forgot passowrd */}
                   <Link to="/">Forgot password?</Link>
                   <br />
-    
+
                   {/* Submit button */}
                   <Button
                     size="large"
@@ -147,7 +146,7 @@ const Login = (props) => {
                   </Button>
                   <br />
                 </form>
-    
+
                 {/* register if no account */}
                 <span>
                   Have no account?<Link to="/signup">Click here to Register</Link>
@@ -156,23 +155,23 @@ const Login = (props) => {
             </Grid>
           </Container>
         </div>
-    }
-    </>
-    );
-  };
-
-  const mapStateToProps = (state) =>{
-    
-    return {
-      auth: state.firebase.auth
-    }
-  }
-
-  const mapDispatchToProps = (dispatch) =>{
-    
-      return {
-          login: (creds) => dispatch(signIn(creds))
       }
+    </>
+  );
+};
+
+const mapStateToProps = (state) => {
+
+  return {
+    auth: state.firebase.auth
   }
-  
-  export default connect(mapStateToProps,mapDispatchToProps)(Login);
+}
+
+const mapDispatchToProps = (dispatch) => {
+
+  return {
+    login: (creds) => dispatch(signIn(creds))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

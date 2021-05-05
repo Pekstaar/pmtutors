@@ -1,4 +1,5 @@
-import { Avatar, Box, Button, CircularProgress, Grid,  Paper } from "@material-ui/core";
+
+import { Avatar, Button, Grid, Paper } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 // import { NotificationManager } from "react-notifications";
 import moment from "moment";
@@ -29,7 +30,7 @@ const Quiz = (props) => {
   const [displayProgress, setDisplayProgress] = useState(false)
   const [uploadProgress, setUploadProgress] = useState(() => 0)
   const [data, setdata] = useState({
-    attachments:[],
+    attachments: [],
   })
   const [values, setValues] = useState({
     title: "",
@@ -40,97 +41,95 @@ const Quiz = (props) => {
     totalcost: "",
     pagecost: "",
     deadline: "",
-    category:"",
-    postedby:"",
-    status:""
+    category: "",
+    postedby: "",
+    status: ""
     // jobs: [],
   });
   // destructuring
-const {
-  title,
-  description,
-  requirements,
-  createdby,
-  createdat,
-  totalcost,
-  pagecost,
-  deadline,
-  category,
-  status
-  // jobs,
-} = values;
+  const {
+    title,
+    description,
+    requirements,
+    createdby,
+    createdat,
+    totalcost,
+    deadline,
+    category,
+    // jobs,
+  } = values;
 
   // get details to update - getone
-const getDetails = () => {
-  fb.firestore().collection("jobs").doc(slug).get()
-  .then(doc =>{ 
-    
-      // console.log(values);
-      setValues({
-        title: doc.data().title,
-        description: doc.data().description,
-        requirements: doc.data().requirements,
-        createdby: doc.data().createdby,
-        createdat: doc.data().createdat,
-        totalcost: doc.data().totalcost,
-        pagecost: doc.data().pagecost,
-        deadline: doc.data().deadline,
-        category: doc.data().category,
-        postedby: doc.data().postedby,
-        status:doc.data().status
-      });
+  const getDetails = () => {
+    fb.firestore().collection("jobs").doc(slug).get()
+      .then(doc => {
 
-      if(doc.data().status === "taken" ){
-        setUploadDisplay(true)
-      }
+        // console.log(values);
+        setValues({
+          title: doc.data().title,
+          description: doc.data().description,
+          requirements: doc.data().requirements,
+          createdby: doc.data().createdby,
+          createdat: doc.data().createdat,
+          totalcost: doc.data().totalcost,
+          pagecost: doc.data().pagecost,
+          deadline: doc.data().deadline,
+          category: doc.data().category,
+          postedby: doc.data().postedby,
+          status: doc.data().status
+        });
 
-  })
-  .catch(e => NotificationManager.error(e.message))
-};
+        if (doc.data().status === "taken") {
+          setUploadDisplay(true)
+        }
 
-//   Take task function:    
-const takeTask = () => {
+      })
+      .catch(e => NotificationManager.error(e.message))
+  };
+
+  //   Take task function:    
+  const takeTask = () => {
     // update job in firestore
     fb.firestore().collection("jobs").doc(slug).update({
       status: "taken",
-      takenby:"signed_in_client",
-      my_status:"pending"
+      takenby: "signed_in_client",
+      my_status: "pending"
     })
-    .then(() => console.log("Update success!"))
-    . catch(e => console.error(e.message))
+      .then(() => console.log("Update success!"))
+      .catch(e => console.error(e.message))
 
     // getJob from database again
     // add full job details to myJobs subcollection
     fb.firestore().collection("jobs").doc(slug).get()
-    .then(r => props.addJob(props.user && props.user.uid,slug,r.data()))
-    
+      .then(r => props.addJob(props.user && props.user.uid, slug, r.data()))
+
     // // render the upload jobs section
     setUploadDisplay(true)
-}
-
-const updatedata = async() =>{
-  const events = await fb.firestore().collection('clients').doc(props.user.uid).collection("jobs")
-
-  const {attach} = data
-  try {
-    // update tutor jobs
-    events.doc(slug).update(data)
-
-    // update general job:
-    fb.firestore().collection("jobs").doc(slug).update(data)
-    .then(() => console.log("Jobs update successfull"))
-
-    NotificationManager.success("Documents uploaded Successfully!","success", 4000)
-  } catch (error) {
-    console.error("data update error",error.message)
   }
-}
+
+  const updatedata = async () => {
+    const events = await fb.firestore().collection('clients').doc(props.user.uid).collection("jobs")
+
+    // const { attach } = data
+    try {
+      // update tutor jobs
+      events.doc(slug).update(data)
+
+      // update general job:
+      fb.firestore().collection("jobs").doc(slug).update(data)
+        .then(() => console.log("Jobs update successfull"))
+
+      NotificationManager.success("Documents uploaded Successfully!", "success", 4000)
+    } catch (error) {
+      console.error("data update error", error.message)
+    }
+  }
 
 
-useEffect(() => {
-  getDetails();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-}, []);
+  useEffect(() => {
+    getDetails();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
@@ -179,7 +178,7 @@ useEffect(() => {
             </div>
             <div>
               <AccountBalanceWallet />
-              ${parseInt(totalcost/100)}
+              ${parseInt(totalcost / 100)}
             </div>
             <div>
               <Alarm />
@@ -187,7 +186,7 @@ useEffect(() => {
             </div>
             <div>
               <Event />
-              {moment(createdat && createdat.seconds && createdat.seconds*1000 ).format('l')}
+              {moment(createdat && createdat.seconds && createdat.seconds * 1000).format('l')}
             </div>
 
             <Button variant="contained" color="primary">
@@ -209,8 +208,8 @@ useEffect(() => {
               >{title && title.charAt(0)}</Avatar>
               {createdby}
             </div>
-            <p style={{overflowX:"hidden"}}>
-             {description}
+            <p style={{ overflowX: "hidden" }}>
+              {description}
             </p>
 
             {/* Attachmets: */}
@@ -258,9 +257,9 @@ useEffect(() => {
                       placeItems: "center",
                       marginBottom: "10px",
                     }}
-                  >                  
-                  <Upload id={slug} updatedata={updatedata} setdata={setdata} displayProg={setDisplayProgress} setUploadProgress={setUploadProgress}>
-                    Select Task to Upload 
+                  >
+                    <Upload id={slug} updatedata={updatedata} setdata={setdata} displayProg={setDisplayProgress} setUploadProgress={setUploadProgress}>
+                      Select Task to Upload
                   </Upload>
                   </div>
                 </div>
@@ -275,22 +274,22 @@ useEffect(() => {
               </>
             ) : (
               title !== "" ?
-              <Button
-                variant="contained"
-                color="primary"
-                style={{ height: "50px", width: "200px", margin: "0 auto" }}
-                onClick = {takeTask}
-              >
-                Take Task
+                <Button
+                  variant="contained"
+                  color="primary"
+                  style={{ height: "50px", width: "200px", margin: "0 auto" }}
+                  onClick={takeTask}
+                >
+                  Take Task
               </Button>
-              :
-              <Button
-                variant="contained"
-                disabled
-                style={{ height: "50px", width: "200px", margin: "0 auto" }}
-                onClick = {takeTask}
-              >
-                Take Task
+                :
+                <Button
+                  variant="contained"
+                  disabled
+                  style={{ height: "50px", width: "200px", margin: "0 auto" }}
+                  onClick={takeTask}
+                >
+                  Take Task
               </Button>
             )}
           </Grid>
@@ -303,18 +302,18 @@ useEffect(() => {
 
 const mapDispatchToProps = (dispatch) => {
 
-    return{
-        updateJob: (data) => dispatch(updateJob(data)),
-        addJob: (id,jobId,job) => dispatch(addClientJob(id,jobId,job))
-    }
+  return {
+    updateJob: (data) => dispatch(updateJob(data)),
+    addJob: (id, jobId, job) => dispatch(addClientJob(id, jobId, job))
+  }
 }
 
 const mapStateToProps = (state) => {
-    console.log(state)
-    return {
-        user: state.firebase.auth,
-        jobs: state.firestore.ordered.jobs
-    };
+  console.log(state)
+  return {
+    user: state.firebase.auth,
+    jobs: state.firestore.ordered.jobs
+  };
 }
 
 

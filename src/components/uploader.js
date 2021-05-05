@@ -10,7 +10,7 @@ class Upload extends React.Component {
     uploadProgress: 0
   };
 
-  handleUploadStart = () =>{
+  handleUploadStart = () => {
     this.props.displayProg(true)
     this.setState({
       isUploading: true,
@@ -18,7 +18,7 @@ class Upload extends React.Component {
     });
   }
 
-  handleProgress = progress =>{
+  handleProgress = progress => {
     this.props.setUploadProgress(progress);
     this.setState({
       uploadProgress: progress
@@ -40,33 +40,33 @@ class Upload extends React.Component {
       .ref(`pm_uploads/${this.props.id}`)
       .child(filename)
       .getDownloadURL();
-      
-      const filemetadata = await firebase
+
+    const filemetadata = await firebase
       .storage()
       .ref(`pm_uploads/${this.props.id}`)
       .child(filename)
       .getMetadata()
 
-      
-      this.setState(oldState => ({
-        // filenames: [...oldState.filenames, filename],
-        downloadData: [...oldState.downloadData, {
-          downloadURL,
-          tag:filemetadata.contentType,
-        }],
-        // uploadProgress: 100,
-        isUploading: false
-      }));
-      console.log(this.state)
+
+    this.setState(oldState => ({
+      // filenames: [...oldState.filenames, filename],
+      downloadData: [...oldState.downloadData, {
+        downloadURL,
+        tag: filemetadata.contentType,
+      }],
+      // uploadProgress: 100,
+      isUploading: false
+    }));
+    console.log(this.state)
 
     // attachments setup
-    this.props.setdata({attachments:[...this.state.downloadData]})
+    this.props.setdata({ attachments: [...this.state.downloadData] })
 
     // call update attachments in firebase myjobs
     this.props.updatedata();
 
     // progressbar display
-    setTimeout(() =>  this.props.displayProg(false), 3000);
+    setTimeout(() => this.props.displayProg(false), 3000);
     // console.log(this.state)
   };
 
@@ -74,21 +74,21 @@ class Upload extends React.Component {
   render() {
     return (
       <div>
-        
-        <label style={{backgroundColor: 'steelblue', color: 'white', padding: 10, borderRadius: 4, cursor: 'pointer'}}>
-            Select File to Upload
+
+        <label style={{ backgroundColor: 'steelblue', color: 'white', padding: 10, borderRadius: 4, cursor: 'pointer' }}>
+          Select File to Upload
             <FileUploader
-                accept="image/*,.xml,.txt,.rtf,.pdf,.docx,.doc,"  
-                name="image-uploader-multiple"
-                randomizeFilename
-                storageRef={firebase.storage().ref(`pm_uploads/${this.props.id}`)}
-                onUploadStart={this.handleUploadStart}
-                onUploadError={this.handleUploadError} 
-                onUploadSuccess={this.handleUploadSuccess}
-                onProgress={this.handleProgress}
-                multiple
-                hidden
-            />
+            accept="image/*,.xml,.txt,.rtf,.pdf,.docx,.doc,"
+            name="image-uploader-multiple"
+            randomizeFilename
+            storageRef={firebase.storage().ref(`pm_uploads/${this.props.id}`)}
+            onUploadStart={this.handleUploadStart}
+            onUploadError={this.handleUploadError}
+            onUploadSuccess={this.handleUploadSuccess}
+            onProgress={this.handleProgress}
+            multiple
+            hidden
+          />
         </label>
 
         {/* <p>Progress: {this.state.uploadProgress}</p> */}

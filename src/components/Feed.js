@@ -1,7 +1,7 @@
 import { Avatar, Grid } from "@material-ui/core";
 import { Favorite } from "@material-ui/icons";
 import moment from "moment";
-import React, {  useState } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import { firestoreConnect } from "react-redux-firebase";
 import { compose } from "redux";
@@ -13,8 +13,7 @@ import ScaleLoader from "react-spinners/ScaleLoader"
 const Feed = (props) => {
   const classes = useStyles();
 
-  const [state, setState] = useState([]);
-  
+
   // const getState = async () => {
   //   try {
   //     setState("")
@@ -40,13 +39,13 @@ const Feed = (props) => {
         display: "flex",
         justifyContent: "center",
         backgroundImage: `linear-gradient(to bottom, rgba(245, 246, 252, 0.52), rgba(190, 20, 93, 0.63)), url(${image}) `,
-        backgroundRepeat:"no-repeat",
+        backgroundRepeat: "no-repeat",
         backgroundSize: "cover",
-        backgroundAttachment:"fixed",
+        backgroundAttachment: "fixed",
         // backgroundPosition:"center",
         padding: ".1em 0",
-        marginTop:".1em",
-        
+        marginTop: ".1em",
+
       }}
     >
       <Grid
@@ -58,7 +57,7 @@ const Feed = (props) => {
           flexDirection: "column ",
           padding: "1em ",
           backgroundColor: "whitesmoke",
-          minHeight:"92vh"
+          minHeight: "92vh"
 
           // padding: "1.2em 0",
         }}
@@ -77,18 +76,18 @@ const Feed = (props) => {
         </h5>
         <Grid item sm={12} justifycontent="center">
           {!props.tasks ?
-            <div style={{width:"100%", height:"100%", display:"grid", placeItems:"center"}}>
-                <ScaleLoader
-                  css={override}
-                  size={150}
-                  color={"royalblue"}
-                  loading={!props.tasks}
-                  height={60}
-                  width={6}
-                />
+            <div style={{ width: "100%", height: "100%", display: "grid", placeItems: "center" }}>
+              <ScaleLoader
+                css={override}
+                size={150}
+                color={"royalblue"}
+                loading={!props.tasks}
+                height={60}
+                width={6}
+              />
             </div>
-          :
-          props.tasks &&
+            :
+            props.tasks &&
             props.tasks.map((j) =>
               j.status === "waiting" && (
                 <div
@@ -98,7 +97,7 @@ const Feed = (props) => {
                     (window.location.pathname = `/quiz/${j.id}`)
                   }
                 >
-                  <Avatar style={{ color:'#fff', backgroundColor:"#3fcaaa", width: "60px", height: "60px" }}>
+                  <Avatar style={{ color: '#fff', backgroundColor: "#3fcaaa", width: "60px", height: "60px" }}>
                     {j.title.charAt(0)}
                   </Avatar>
                   <div>
@@ -108,7 +107,7 @@ const Feed = (props) => {
                         : j.title}
                     </h6>
 
-                    <p style={{color:"#3f4aca"}}>
+                    <p style={{ color: "#3f4aca" }}>
                       Posted:{" "}
                       {moment(
                         j.createdat.toDate()
@@ -119,8 +118,8 @@ const Feed = (props) => {
                     </p>
                   </div>
 
-                  <Favorite style={{color:"#3f4aca"}} />
-                  <p style={{color:"#656565"}}>
+                  <Favorite style={{ color: "#3f4aca" }} />
+                  <p style={{ color: "#656565" }}>
                     {j.description.length > 30
                       ? `${j.description.substring(0, 52)} . . .`
                       : j.description}
@@ -134,21 +133,21 @@ const Feed = (props) => {
   );
 };
 
-const mapStateToProps = (state) =>{
+const mapStateToProps = (state) => {
   console.log(state)
   return {
     tasks: state.firestore.ordered.jobs
   }
 }
 
-export default compose( 
-  connect(mapStateToProps,null),
- 
-  firestoreConnect(() =>[
+export default compose(
+  connect(mapStateToProps, null),
+
+  firestoreConnect(() => [
     {
-      collection:"jobs",
+      collection: "jobs",
       where: ["status", "==", "waiting"],
-      orderBy:["createdat","desc"],
+      orderBy: ["createdat", "desc"],
     }
   ])
 )(Feed)

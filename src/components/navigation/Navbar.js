@@ -1,11 +1,11 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { AppBar, Button, Toolbar, withStyles } from "@material-ui/core";
 import {
   Create,
   List,
   Search,
 } from "@material-ui/icons";
-import { Link, Redirect } from "react-router-dom";
+import { Link } from "react-router-dom";
 import useStyles from '../../styling/navbar.min.js'
 import { signOut } from "../../store/actions/authAction.js";
 import { connect } from "react-redux";
@@ -17,17 +17,17 @@ import FloatingNav from "./FloatingNav.js";
 
 const DefaultNavigation = (props) => {
 
-  const {classes, position} = props;
+  const { classes, position } = props;
   const [display, setDisplay] = useState(false);
 
   const getFloat = () => {
-    if(display === false){
+    if (display === false) {
       setDisplay(true)
-      setTimeout(()=> setDisplay(false),15000)
-      return <FloatingNav/>
+      setTimeout(() => setDisplay(false), 15000)
+      return <FloatingNav />
     }
-      setDisplay(false)   
-  } 
+    setDisplay(false)
+  }
 
 
   return (
@@ -61,12 +61,12 @@ const DefaultNavigation = (props) => {
                 Take Question
               </Button>
             </Link>
-            <Button variant="outlined" onClick={getFloat} style={{marginLeft:"3em",height:"34px"}} ><List style={{fontSize:"28px"}} /></Button>
+            <Button variant="outlined" onClick={getFloat} style={{ marginLeft: "3em", height: "34px" }} ><List style={{ fontSize: "28px" }} /></Button>
             {
               display && display ?
-              
-                <FloatingNav setDisplay={setDisplay} logout={props.logout}/>
-              :
+
+                <FloatingNav setDisplay={setDisplay} logout={props.logout} />
+                :
                 null
             }
           </div>
@@ -76,7 +76,7 @@ const DefaultNavigation = (props) => {
   );
 };
 
-const mapDispatchToProps = (dispatch) =>{
+const mapDispatchToProps = (dispatch) => {
   return {
     logout: () => dispatch(signOut())
   }

@@ -7,6 +7,7 @@ import Home from './pages/Home'
 import Admin from './admin/Admin'
 import Jobs from "./admin/pages/Jobs";
 import Vet from "./admin/pages/Vet";
+import JobSubmitted from "./admin/pages/JobSubmitted"
 import Login from "./auth/Login";
 import SignUp from "./auth/SignUp";
 import Dashboard from "./pages/Dashboard"
@@ -15,8 +16,9 @@ import PrivateRoute from "./routing/PrivateRouter";
 import QuizBank from "./pages/QuizBank";
 import Quiz from "./pages/Quiz";
 import MyJobs from "./pages/MyJobs";
+import Clients from "./admin/pages/Clients";
 
-const App = () =>{
+const App = () => {
   return (
     <div className="App">
       <NotificationContainer />
@@ -32,9 +34,10 @@ const App = () =>{
         <PrivateRoute path="/dashboard" component={Dashboard} />
         <PrivateRoute path="/quiz/:slug" component={Quiz} />
         <Route path="/pmtutorsadmin" exact component={Admin} />
-        <Route path="/pmtutorsadmin/jobs"  component={Jobs} />
-        <Route path="/pmtutorsadmin/vets"  component={Vet} />
-
+        <Route path="/pmtutorsadmin/jobs" component={Jobs} />
+        <Route path="/pmtutorsadmin/jobs/submitted/:slug" component={JobSubmitted} />
+        <Route path="/pmtutorsadmin/vets" component={Vet} />
+        <Route path="/pmtutorsadmin/clients" component={Clients} />f
       </Switch>
     </div>
   )
