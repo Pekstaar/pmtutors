@@ -1,0 +1,86 @@
+Submitted jobs View:
+    create a submitted jobs database
+    upon Submit, get full job details and add submitted date property
+    Submitted jobs can be only: viewed 
+    on Click job, take admin to view job details and and either approve or abort job
+    
+
+    
+              <div>
+                <h6 style={{ margin: "0" }}>
+                  Excel Sheet Management with panda
+                </h6>
+
+                <span style={{ color: "rgba(0,0,0,0.5)" }}>12 may 2021</span>
+
+                <div style={{ color: "#4BB543" }}>
+                  <span style={{ display: "flex", alignItems: "center" }}>
+                    <Check style={{ fontSize: "30px" }} />
+                    {"   "}
+                    <small>completed</small>
+                  </span>
+                </div>
+              </div>
+
+              <div>
+                <h6 style={{ margin: "0" }}>
+                  Excel Sheet Management with panda
+                </h6>
+
+                <span style={{ color: "rgba(0,0,0,0.5)" }}>12 may 2021</span>
+
+                <div style={{ color: "rgba(0,0,0,0.6)" }}>
+                  <span style={{ display: "flex", alignItems: "center" }}>
+                    <MoreHoriz style={{ fontSize: "30px" }} />
+                    {"      "}
+                    <small>Waiting</small>
+                  </span>
+                </div>
+              </div>
+              <div>
+                <h6 style={{ margin: "0" }}>
+                  Excel Sheet Management with panda
+                </h6>
+
+                <span style={{ color: "rgba(0,0,0,0.5)" }}>12 may 2021</span>
+
+                <div style={{ color: "#4BB543" }}>
+                  <span style={{ display: "flex", alignItems: "center" }}>
+                    <Check style={{ fontSize: "30px" }} />
+                    <small>completed</small>
+                  </span>
+                </div>
+              </div>
+
+              <div>
+                <h6 style={{ margin: "0" }}>
+                  Excel Sheet Management with panda
+                </h6>
+
+                <span style={{ color: "rgba(0,0,0,0.5)" }}>12 may 2021</span>
+
+                <div style={{ color: "rgba(0,0,0,0.6)" }}>
+                  <span style={{ display: "flex", alignItems: "center" }}>
+                    <MoreHoriz style={{ fontSize: "30px" }} />
+                    {"      "}
+                    <small>Waiting</small>
+                  </span>
+                </div>
+              </div>
+
+              {/* task 2 */}
+              <div>
+                <h6 style={{ margin: "0" }}>
+                  Define the purpose of a constitution
+                </h6>
+
+                <span style={{ color: "rgba(0,0,0,0.5)" }}>19 April 2021</span>
+
+                <div style={{ color: "#ff3333" }}>
+                  <span style={{ display: "flex", alignItems: "center" }}>
+                    <Clear style={{ fontSize: "30px" }} />
+                    {"   "}
+                    <small>cancelled!</small>
+                  </span>
+                </div>
+              </div>
