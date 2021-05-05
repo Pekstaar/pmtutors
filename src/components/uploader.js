@@ -5,7 +5,7 @@ import FileUploader from "react-firebase-file-uploader";
 class Upload extends React.Component {
   state = {
     // filenames: [],
-    downloadURLs: [],
+    downloadData: [{}],
     isUploading: false,
     uploadProgress: 0
   };
@@ -40,16 +40,27 @@ class Upload extends React.Component {
       .ref(`pm_uploads/${this.props.id}`)
       .child(filename)
       .getDownloadURL();
+      
+      const filemetadata = await firebase
+      .storage()
+      .ref(`pm_uploads/${this.props.id}`)
+      .child(filename)
+      .getMetadata()
 
-    this.setState(oldState => ({
-      // filenames: [...oldState.filenames, filename],
-      downloadURLs: [...oldState.downloadURLs, downloadURL],
-      // uploadProgress: 100,
-      isUploading: false
-    }));
+      
+      this.setState(oldState => ({
+        // filenames: [...oldState.filenames, filename],
+        downloadData: [...oldState.downloadData, {
+          downloadURL,
+          tag:filemetadata.contentType,
+        }],
+        // uploadProgress: 100,
+        isUploading: false
+      }));
+      console.log(this.state)
 
     // attachments setup
-    this.props.setdata({attachments:[...this.state.downloadURLs]})
+    this.props.setdata({attachments:[...this.state.downloadData]})
 
     // call update attachments in firebase myjobs
     this.props.updatedata();
