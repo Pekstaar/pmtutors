@@ -42,13 +42,6 @@ const Profile = (props) => {
     study: "",
   });
 
-  const getUser = () => {
-    fb.firestore().collection("clients").doc(firebase.auth.uid).get()
-      .then(r => setState({
-        ...r.data()
-      }))
-  }
-
 
   // destructuring
   const {
@@ -71,6 +64,7 @@ const Profile = (props) => {
     setState({ ...state, [name]: value });
   };
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -80,8 +74,14 @@ const Profile = (props) => {
   };
 
   useEffect(() => {
-    getUser()
-  });
+    const getUser = () => {
+      fb.firestore().collection("clients").doc(firebase.auth.uid).get()
+        .then(r => setState({
+          ...r.data()
+        }))
+    };
+    getUser();
+  }, [firebase.auth.uid]);
 
   return (
     <div>

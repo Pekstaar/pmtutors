@@ -19,7 +19,7 @@ const About = () => {
       <Grid
         item
         xs={12}
-        style={{ padding: "1em 5rem" }}
+        style={{ padding: "1em 1em", display: "grid", gridTemplateColumns: "1fr 1fr 1fr" }}
         className={classes.root}
       >
         <Grid className={classes.stage} item sm={11}>
@@ -70,7 +70,7 @@ const About = () => {
             justifyContent: "flex-end",
             float: "right",
           }}
-          // className={classes.img}
+        // className={classes.img}
         >
           <img
             src="https://www.kindpng.com/picc/m/49-497739_computer-clipart-team-development-team-png-transparent-png.png"

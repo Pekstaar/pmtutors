@@ -5,7 +5,13 @@ Submitted jobs View:
     on Click job, take admin to view job details and and either approve or abort job
     
 Submitting Job:
-  upload attachments:
-  set submit button visible
-  call submit job action
-  add job to submitted jobs database
+  upload attachments: <<
+  set submit button visible: <<
+  call submit job action: <<
+  add job to submitted jobs database : <<
+
+Load Submitted Jobs:
+  connect to submitted database
+  read all Jobs
+  map Jobs to table
+  

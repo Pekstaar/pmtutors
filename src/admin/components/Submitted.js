@@ -1,5 +1,4 @@
 import {
-    Button,
     Container,
     Grid,
     IconButton,
@@ -12,7 +11,7 @@ import {
     TableRow,
     Typography,
 } from "@material-ui/core";
-import { PersonAddDisabled, Visibility, Work } from "@material-ui/icons";
+import { Visibility, Work } from "@material-ui/icons";
 import React, { useState } from "react";
 import PageHeader from "./PageHeader";
 import ScaleLoader from "react-spinners/ScaleLoader";
@@ -23,8 +22,8 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { firestoreConnect } from "react-redux-firebase";
 import moment from "moment";
-import fb from "../../config/fbConfig"
-import { NotificationManager } from "react-notifications";
+// import fb from "../../config/fbConfig"
+// import { NotificationManager } from "react-notifications";
 
 
 
@@ -33,11 +32,10 @@ const Submitted = (props) => {
     const classes = useStyles();
 
     // file states
-    const [loading, setLoading] = useState(true);
     // initial details = empty default
-    const [state, setState] = useState({
+    // const [state, setState] = useState({
 
-    });
+    // });
 
 
     // loader css override
@@ -51,8 +49,8 @@ const Submitted = (props) => {
     return (
         <div>
             <PageHeader
-                title="New Job"
-                subtitle="Create update and manage Jobs available for clients."
+                title="Manage Jobs"
+                subtitle="Create update, manage Jobs available and approve submitted Jobs."
                 icon={<Work />}
                 displayButtons={true}
             />
@@ -67,7 +65,7 @@ const Submitted = (props) => {
                                 component="div"
                                 style={{ fontFamily: "Roboto Slab" }}
                             >
-                                All Clients
+                                Submitted Jobs
                             </Typography>
                         </Grid>
                     </Grid>
@@ -91,7 +89,6 @@ const Submitted = (props) => {
                                             css={override}
                                             size={150}
                                             color={"royalblue"}
-                                            loading={loading}
                                         />
                                     </TableCell>
                                 </TableRow>
@@ -111,7 +108,7 @@ const Submitted = (props) => {
                                                 <TableCell>{moment(j.submittedat.toDate()).calendar()}</TableCell>
                                                 <TableCell>
                                                     <IconButton
-                                                        onClick={() => getOneJob(j.id)}
+                                                        // onClick={() => getOneJob(j.id)}
                                                         color="primary"
                                                         aria-label="View Job"
                                                     >

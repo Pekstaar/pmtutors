@@ -16,7 +16,7 @@ const theme = createMuiTheme({
     },
 });
 
-const Submitted = ({ classes }) => {
+const Submit = ({ classes }) => {
     return (
         <ThemeProvider theme={theme}>
             <SideMenu />
@@ -32,4 +32,4 @@ const Submitted = ({ classes }) => {
     );
 };
 
-export default withStyles(useStyles)(Submitted);
+export default withStyles(useStyles)(Submit);

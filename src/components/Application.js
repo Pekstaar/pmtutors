@@ -26,7 +26,7 @@ const Application = () => {
           <h5>Want To Earn?</h5>
         </div>
 
-        <Grid item container xs={11}>
+        <Grid item container xs={12}>
           <Grid className={classes.step} item sm={3} xs={8}>
             {/* icon Section */}
             <div className={classes.icon}>

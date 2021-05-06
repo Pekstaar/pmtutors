@@ -10,11 +10,13 @@ import Navbar from "../components/navigation/Navbar";
 import useStyles from "../styling/quiz.min.js"
 import fb from "../config/fbConfig"
 import NotificationManager from "react-notifications/lib/NotificationManager";
-import { updateJob } from "../store/actions/jobAction";
+import { submitJob, updateJob } from "../store/actions/jobAction";
 import { connect } from "react-redux";
 import { addClientJob } from "../store/actions/clientAction";
 import Upload from "../components/uploader";
 import LinearProgressWithLabel from "../components/progress"
+import { compose } from "redux";
+import { firestoreConnect } from "react-redux-firebase";
 // import { getClient } from "./admin/data/ClientData";
 
 const Quiz = (props) => {
@@ -66,17 +68,7 @@ const Quiz = (props) => {
 
         // console.log(values);
         setValues({
-          title: doc.data().title,
-          description: doc.data().description,
-          requirements: doc.data().requirements,
-          createdby: doc.data().createdby,
-          createdat: doc.data().createdat,
-          totalcost: doc.data().totalcost,
-          pagecost: doc.data().pagecost,
-          deadline: doc.data().deadline,
-          category: doc.data().category,
-          postedby: doc.data().postedby,
-          status: doc.data().status
+          ...doc.data()
         });
 
         if (doc.data().status === "taken") {
@@ -123,6 +115,16 @@ const Quiz = (props) => {
     } catch (error) {
       console.error("data update error", error.message)
     }
+  }
+
+  const jobSubmission = async () => {
+    const client = props.clients.find(e => e.id === props.user.uid)
+    const conn = fb.firestore().collection("clients").doc(props.user.uid).collection("jobs")
+    const data = await conn.doc(slug).get()
+    // console.log(data.data())
+    // console.log(client.username)
+
+    return props.submitJob(slug, data.data(), client)
   }
 
 
@@ -271,6 +273,10 @@ const Quiz = (props) => {
                   :
                   ""
                 }
+
+                <div>
+                  <Button onClick={jobSubmission} variant="contained" style={{ backgroundColor: "#4BB543", color: "#fff", padding: "8px 2em" }}>Submit JOB</Button>
+                </div>
               </>
             ) : (
               title !== "" ?
@@ -304,17 +310,26 @@ const mapDispatchToProps = (dispatch) => {
 
   return {
     updateJob: (data) => dispatch(updateJob(data)),
-    addJob: (id, jobId, job) => dispatch(addClientJob(id, jobId, job))
+    addJob: (id, jobId, job) => dispatch(addClientJob(id, jobId, job)),
+    submitJob: (id, data, user) => dispatch(submitJob(id, data, user)),
   }
 }
 
 const mapStateToProps = (state) => {
-  console.log(state)
+  // console.log(state)
   return {
     user: state.firebase.auth,
-    jobs: state.firestore.ordered.jobs
+    // jobs: state.firestore.ordered.jobs,
+    clients: state.firestore.ordered.clients
   };
 }
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(Quiz);
+export default compose(
+  connect(mapStateToProps, mapDispatchToProps),
+  firestoreConnect(() => [
+    {
+      collection: "clients",
+    }
+  ])
+)(Quiz);

@@ -17,6 +17,7 @@ import QuizBank from "./pages/QuizBank";
 import Quiz from "./pages/Quiz";
 import MyJobs from "./pages/MyJobs";
 import Clients from "./admin/pages/Clients";
+import SubmittedJobs from "./admin/pages/SubmittedJobs";
 
 const App = () => {
   return (
@@ -34,7 +35,8 @@ const App = () => {
         <PrivateRoute path="/dashboard" component={Dashboard} />
         <PrivateRoute path="/quiz/:slug" component={Quiz} />
         <Route path="/pmtutorsadmin" exact component={Admin} />
-        <Route path="/pmtutorsadmin/jobs" component={Jobs} />
+        <Route path="/pmtutorsadmin/jobs" exact component={Jobs} />
+        <Route path="/pmtutorsadmin/jobs/submitted" exact component={SubmittedJobs} />
         <Route path="/pmtutorsadmin/jobs/submitted/:slug" component={JobSubmitted} />
         <Route path="/pmtutorsadmin/vets" component={Vet} />
         <Route path="/pmtutorsadmin/clients" component={Clients} />f

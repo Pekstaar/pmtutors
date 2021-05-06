@@ -2,9 +2,9 @@ import { NotificationManager } from "react-notifications"
 
 const initState = [{}]
 
- const jobReducer = (state=initState, action) =>{
-    
-    switch(action.type){
+const jobReducer = (state = initState, action) => {
+
+    switch (action.type) {
 
         case "CREATE_JOB":
             NotificationManager.success("Job Created Successfully!", "Success")
@@ -34,10 +34,22 @@ const initState = [{}]
             NotificationManager.success("Job Updated Successfully")
 
             return state;
-        
+
         case "UPDATE_JOB_ERROR":
 
-            NotificationManager.error(action.error.message,"Update Error!")
+            NotificationManager.error(action.error.message, "Update Error!")
+
+            return state;
+
+        case "JOB_SUBMIT":
+
+            NotificationManager.success("Job submitted Successfully!")
+
+            return state;
+
+        case "JOB_SUBMIT_ERROR":
+
+            NotificationManager.error(action.error.message, "Submission Error!")
 
             return state;
 

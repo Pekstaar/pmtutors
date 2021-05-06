@@ -138,8 +138,8 @@ const Job = (props) => {
   return (
     <div>
       <PageHeader
-        title="New Job"
-        subtitle="Create update and manage Jobs available for clients."
+        title="Manage Jobs"
+        subtitle="Create update, manage Jobs available and approve submitted Jobs."
         icon={<Work />}
         displayButtons={true}
       />
