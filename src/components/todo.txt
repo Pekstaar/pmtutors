@@ -11,7 +11,11 @@ Submitting Job:
   add job to submitted jobs database : <<
 
 Load Submitted Jobs:
-  connect to submitted database
-  read all Jobs
-  map Jobs to table
-  
+  connect to submitted database: <<
+  read all Jobs: <<
+  map Jobs to table: <<
+
+Display Submitted Job:
+  On component mount get Job from submitted database
+  map job to state as well as attachments
+

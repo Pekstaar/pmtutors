@@ -17,6 +17,7 @@ import Upload from "../components/uploader";
 import LinearProgressWithLabel from "../components/progress"
 import { compose } from "redux";
 import { firestoreConnect } from "react-redux-firebase";
+import DoneAll from '@material-ui/icons/DoneAll';
 // import { getClient } from "./admin/data/ClientData";
 
 const Quiz = (props) => {
@@ -73,6 +74,8 @@ const Quiz = (props) => {
 
         if (doc.data().status === "taken") {
           setUploadDisplay(true)
+          return
+
         }
 
       })
@@ -123,15 +126,20 @@ const Quiz = (props) => {
     const data = await conn.doc(slug).get()
     // console.log(data.data())
     // console.log(client.username)
+    fb.firestore().collection("jobs").doc(slug).update({ status: "submitted" })
 
-    return props.submitJob(slug, data.data(), client)
+    try {
+      props.submitJob(slug, data.data(), client);
+      getDetails();
+    } catch (e) { throw e }
+
   }
 
 
   useEffect(() => {
     getDetails();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [values.status]);
 
   return (
     <>
@@ -236,68 +244,74 @@ const Quiz = (props) => {
 
           {/* Footer */}
           <Grid item md={12} className={classes.footer}>
-            {uploadDisplay ? (
-              <>
-                <p>
-                  Please Ensure your meet all requirements and expectations for
-                  error may lead to penalty
-                </p>
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    margin: "0 auto",
-                  }}
-                >
-                  <div
-                    style={{
-                      display: "grid",
-                      height: "200px",
-                      width: "500px",
-                      border: "1px dashed grey",
-                      placeItems: "center",
-                      marginBottom: "10px",
-                    }}
-                  >
-                    <Upload id={slug} updatedata={updatedata} setdata={setdata} displayProg={setDisplayProgress} setUploadProgress={setUploadProgress}>
-                      Select Task to Upload
-                  </Upload>
-                  </div>
+            {
+              values.status && values.status === "submitted" ?
+                <div style={{ backgroundColor: '#4BB543', width: "60%", margin: "auto", padding: ".5em 0", color: "#fff" }}>
+                  <span >Job Submitted Successfully!</span>&nbsp;&nbsp;&nbsp;<DoneAll style={{ fontSize: "35px" }} />
                 </div>
-                {/* progress display */}
-                {displayProgress ?
-                  <div className={classes.progress}>
-                    <LinearProgressWithLabel value={uploadProgress} />
-                  </div>
-                  :
-                  ""
-                }
-
-                <div>
-                  <Button onClick={jobSubmission} variant="contained" style={{ backgroundColor: "#4BB543", color: "#fff", padding: "8px 2em" }}>Submit JOB</Button>
-                </div>
-              </>
-            ) : (
-              title !== "" ?
-                <Button
-                  variant="contained"
-                  color="primary"
-                  style={{ height: "50px", width: "200px", margin: "0 auto" }}
-                  onClick={takeTask}
-                >
-                  Take Task
-              </Button>
                 :
-                <Button
-                  variant="contained"
-                  disabled
-                  style={{ height: "50px", width: "200px", margin: "0 auto" }}
-                  onClick={takeTask}
-                >
-                  Take Task
+                uploadDisplay ? (
+                  <div>
+                    <p>
+                      Please Ensure your meet all requirements and expectations for
+                      error may lead to penalty
+                    </p>
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        margin: "0 auto",
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: "grid",
+                          height: "200px",
+                          width: "500px",
+                          border: "1px dashed grey",
+                          placeItems: "center",
+                          marginBottom: "10px",
+                        }}
+                      >
+                        <Upload id={slug} updatedata={updatedata} setdata={setdata} displayProg={setDisplayProgress} setUploadProgress={setUploadProgress}>
+                          Select Task to Upload
+                  </Upload>
+                      </div>
+                    </div>
+                    {/* progress display */}
+                    {displayProgress ?
+                      <div className={classes.progress}>
+                        <LinearProgressWithLabel value={uploadProgress} />
+                      </div>
+                      :
+                      ""
+                    }
+
+                    <div>
+                      <Button onClick={jobSubmission} variant="contained" style={{ backgroundColor: "#4BB543", color: "#fff", padding: "8px 2em" }}>Submit JOB</Button>
+                    </div>
+                  </div>
+                ) : (
+                  title !== "" ?
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      style={{ height: "50px", width: "200px", margin: "0 auto" }}
+                      onClick={takeTask}
+                    >
+                      Take Task
               </Button>
-            )}
+                    :
+                    <Button
+                      variant="contained"
+                      disabled
+                      style={{ height: "50px", width: "200px", margin: "0 auto" }}
+                      onClick={takeTask}
+                    >
+                      Take Task
+              </Button>
+                )}
           </Grid>
         </Grid>
       </Grid>

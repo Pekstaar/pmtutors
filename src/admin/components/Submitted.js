@@ -12,7 +12,7 @@ import {
     Typography,
 } from "@material-ui/core";
 import { Visibility, Work } from "@material-ui/icons";
-import React, { useState } from "react";
+import React from "react";
 import PageHeader from "./PageHeader";
 import ScaleLoader from "react-spinners/ScaleLoader";
 //   import { addJob, jobDelete, getJob, getJobs, updateJob } from "../data/JobData";
@@ -30,6 +30,10 @@ import moment from "moment";
 const Submitted = (props) => {
     // file styling
     const classes = useStyles();
+
+
+
+    // const  slug = props.match.params;
 
     // file states
     // initial details = empty default
@@ -76,13 +80,13 @@ const Submitted = (props) => {
                                 <TableCell className={classes.head}>Title</TableCell>
                                 <TableCell className={classes.head}>Category</TableCell>
                                 <TableCell className={classes.head}>Cost(kshs)</TableCell>
-                                <TableCell className={classes.head}>Taken By</TableCell>
+                                <TableCell className={classes.head}>Submitted By</TableCell>
                                 <TableCell className={classes.head}>Submitted</TableCell>
                                 <TableCell className={classes.head}>Actions</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {!props.clients ? (
+                            {!props.jobs ? (
                                 <TableRow>
                                     <TableCell colSpan={7}>
                                         <ScaleLoader
@@ -104,11 +108,11 @@ const Submitted = (props) => {
                                                 </TableCell>
                                                 <TableCell>{j.category}</TableCell>
                                                 <TableCell>{j.totalcost} kshs</TableCell>
-                                                <TableCell>{j.takenby}</TableCell>
+                                                <TableCell>{j.submittedby}</TableCell>
                                                 <TableCell>{moment(j.submittedat.toDate()).calendar()}</TableCell>
                                                 <TableCell>
                                                     <IconButton
-                                                        // onClick={() => getOneJob(j.id)}
+                                                        onClick={() => window.location.pathname = `/pmtutorsadmin/jobs/submitted/${j.id}`}
                                                         color="primary"
                                                         aria-label="View Job"
                                                     >
@@ -128,12 +132,6 @@ const Submitted = (props) => {
     );
 };
 
-const mapDispatchToProps = (dispatch) => {
-    return {
-
-    }
-}
-
 const mapStateToProps = (state) => {
 
     return {
@@ -142,7 +140,7 @@ const mapStateToProps = (state) => {
 }
 
 export default compose(
-    connect(mapStateToProps, mapDispatchToProps),
+    connect(mapStateToProps),
     firestoreConnect(() => [
         {
             collection: "submitted",

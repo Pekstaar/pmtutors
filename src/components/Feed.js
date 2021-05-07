@@ -1,10 +1,12 @@
 import { Avatar, Grid } from "@material-ui/core";
 import { Favorite } from "@material-ui/icons";
 import moment from "moment";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { firestoreConnect } from "react-redux-firebase";
 import { compose } from "redux";
+import firebase from "../config/fbConfig"
+import { handleLevelTasks } from "../functions/handleLevel"
 
 import image from "../images/img_3.jpg";
 import useStyles from '../styling/feed.min.js'
@@ -13,15 +15,8 @@ import ScaleLoader from "react-spinners/ScaleLoader"
 const Feed = (props) => {
   const classes = useStyles();
 
+  const [isToTake, setIsToTake] = useState()
 
-  // const getState = async () => {
-  //   try {
-  //     setState("")
-  //   } catch (e) {
-  //     NotificationManager.error(e.message);
-  //     ;
-  //   }
-  // };
 
   const override = `
       display:flex;
@@ -30,6 +25,41 @@ const Feed = (props) => {
       border-color:red;
       `;
 
+  const openJob = (id) => {
+    if (isToTake === 0) {
+      window.alert("You are not allowed to take more jobs based on your Level. Complete atleast on more task in your cart so as to take another")
+      return;
+    }
+    if (isToTake > 1) {
+      return (window.location.pathname = `/quiz/${id}`)
+    }
+  }
+
+
+  useEffect(() => {
+    const getData = async () => {
+
+      const level = await firebase.firestore().collection("clients")
+        .doc(props.user.uid)
+        .get()
+
+      let data = [];
+      firebase.firestore().collection("clients").doc(props.user.uid)
+        .collection("jobs")
+        .where("status", "==", "taken")
+        .get()
+        .then(r => r.forEach(doc => data.push(doc.data())))
+        .then(() => {
+
+          setIsToTake(handleLevelTasks(level.data().level) - data.length)
+        })
+      // const filtered = data.data().filter(e => e.status === "taken")
+
+
+    }
+
+    getData()
+  }, [])
 
   return (
     <Grid
@@ -93,9 +123,7 @@ const Feed = (props) => {
                 <div
                   className={classes.job}
                   key={j.id}
-                  onClick={() =>
-                    (window.location.pathname = `/quiz/${j.id}`)
-                  }
+                  onClick={() => openJob(j.id)}
                 >
                   <Avatar style={{ color: '#fff', backgroundColor: "#3fcaaa", width: "60px", height: "60px" }}>
                     {j.title.charAt(0)}
@@ -136,9 +164,12 @@ const Feed = (props) => {
 const mapStateToProps = (state) => {
   console.log(state)
   return {
-    tasks: state.firestore.ordered.jobs
+    tasks: state.firestore.ordered.jobs,
+    user: state.firebase.auth
   }
 }
+
+
 
 export default compose(
   connect(mapStateToProps, null),

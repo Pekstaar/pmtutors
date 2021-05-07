@@ -6,14 +6,15 @@ import {
     ThemeProvider,
     withStyles,
 } from "@material-ui/core";
-import { AccountBalanceWallet, Event, Label } from "@material-ui/icons";
+import { AccountBalanceWallet, Event, Label, SystemUpdateAlt } from "@material-ui/icons";
 import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import SideMenu from "../components/SideMenu";
 import useStyles from "../css/jobsubmitted.min.js"
 import fb from "../../config/fbConfig"
 import moment from "moment";
-import { AiOutlineFileWord } from "react-icons/ai";
+// import { AiOutlineFileWord } from "react-icons/ai";
+import { NotificationManager } from "react-notifications"
 
 const theme = createMuiTheme({
     background: {
@@ -25,6 +26,8 @@ const theme = createMuiTheme({
 const JobSubmitted = (props) => {
     const classes = useStyles()
 
+    const [loading, setLoading] = useState(false)
+
     const [state, setState] = useState({
         title: "",
         description: "",
@@ -34,19 +37,22 @@ const JobSubmitted = (props) => {
         totalcost: "",
         category: "",
         attachments: [],
+        submittedby: "",
     })
 
-    const { slug } = props;
+    const { slug } = props.match.params;
 
-    const getJob = () => {
 
-        fb.firestore().collection("submitted").doc(slug).get()
-            .then(r => setState({ ...state }))
-            // .then(() => )
-            .catch(e => console.error(e.message))
-    }
 
     useEffect(() => {
+        const getJob = () => {
+            setLoading(true)
+
+            fb.firestore().collection("submitted").doc(slug).get()
+                .then(r => setState({ ...r.data() }))
+                .then(() => setLoading(false))
+                .catch(e => NotificationManager.error(e.message))
+        }
         getJob()
     })
 
@@ -60,6 +66,9 @@ const JobSubmitted = (props) => {
                 <div className={classes.container}>
                     <h3>Submitted Jobs</h3>
                     <div className={classes.subbar}>
+                        <span style={{ fontSize: "18px", color: "#ec4444", fontStyle: "lighter" }}>
+                            {state.submittedby}
+                        </span>
                         <div>
                             <Label />
                             {state.category}
@@ -73,16 +82,9 @@ const JobSubmitted = (props) => {
                             {moment(state.submittedat && state.submittedat.seconds && state.submittedat.seconds * 1000).format('l')}
                         </div>
                     </div>
-                    <div>
-                        <div
-                            style={{
-                                display: "flex",
-                                alignItems: "center",
-                                fontFamily: "Roboto Slab",
-                            }}
-                        >
-                        </div>
-                        <p style={{ overflowX: "hidden" }}>
+                    <div className={classes.body}>
+
+                        <p style={{}}>
                             {state.description}
                         </p>
 
@@ -93,39 +95,34 @@ const JobSubmitted = (props) => {
                             </strong>
                             <br />
                             <div style={{ display: "flex" }}>
-                                {state.attachments && state.attachments.map(file => {
-                                    if (file.tag.includes("word")) {
+                                {state.attachments && state.attachments.map((file, e) => {
+                                    // if (file.tag && file.tag.includes("word")) {
+
+                                    if (file.downloadURL && file.downloadURL !== "") {
                                         return (
-                                            <>
-                                                <a href={`${file.downloadURL}`} style={{ cursor: "pointer" }}>
-                                                    <Paper
-                                                        style={{ width: "150px", height: "150px", margin: "0 .2em" }}
-                                                    >
-                                                        <AiOutlineFileWord style={{ fontSize: "130px" }} />
-                                                    </Paper>
-                                                </a>
-                                            </>
-                                        )
-                                    } else if (file.tag.includes("image")) {
-                                        return (
-                                            <a href={`${file.downloadURL}`} style={{ cursor: "pointer" }}>
+                                            <a href={`${file.downloadURL}`} style={{ cursor: "pointer" }} key={e} >
                                                 <Paper
-                                                    style={{ width: "150px", height: "150px", margin: "0 .2em" }}
+                                                    style={{ width: "150px", height: "150px", margin: "0 .2em", display: "grid", placeItems: "center" }}
                                                 >
-                                                    <img src={`${file.downloadURL}`} alt="upload file" />
+                                                    <SystemUpdateAlt style={{ fontSize: "130px" }} />
                                                 </Paper>
+                                                <span style={{ fontStyle: "italic" }}>{`${file.downloadURL && file.downloadURL.substring(16, 46)}. . .`}</span>
                                             </a>
                                         )
                                     }
-                                })}
 
-                                <a href={`${state.attachments.downloadURL}`}>
-                                    <Paper
-                                        style={{ width: "150px", height: "150px", margin: "0 .2em" }}
-                                    >
-                                        <AiOutlineFileWord style={{ fontSize: "130px" }} />
-                                    </Paper>
-                                </a>
+                                    // } else if (file.tag && file.tag.includes("image")) {
+                                    //     return (
+                                    //         <a href={`#`} style={{ cursor: "pointer" }}>
+                                    //             <Paper
+                                    //                 style={{ width: "150px", height: "150px", margin: "0 .2em" }}
+                                    //             >
+                                    //                 <img src={`#`} alt="upload file" />
+                                    //             </Paper>
+                                    //         </a>
+                                    //     )
+                                    // }
+                                })}
                             </div>
 
                         </div>
