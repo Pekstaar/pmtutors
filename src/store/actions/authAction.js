@@ -42,7 +42,7 @@ export const signUp = (newUser) => {
                 username: newUser.username,
                 email: r.user.email,
                 createdat: new Date(),
-                level: "begginer",
+                level: "to_vet",
                 phonenumber: "",
                 residence: "",
                 about: "",

@@ -18,6 +18,7 @@ import Quiz from "./pages/Quiz";
 import MyJobs from "./pages/MyJobs";
 import Clients from "./admin/pages/Clients";
 import SubmittedJobs from "./admin/pages/SubmittedJobs";
+import Vetting from "./pages/Vetting";
 
 const App = () => {
   return (
@@ -33,6 +34,7 @@ const App = () => {
         <PrivateRoute path="/myjobs" component={MyJobs} />
         <PrivateRoute path="/profile" component={Profile} />
         <PrivateRoute path="/dashboard" component={Dashboard} />
+        <PrivateRoute path="/vetting" component={Vetting} />
         <PrivateRoute path="/quiz/:slug" component={Quiz} />
         <Route path="/pmtutorsadmin" exact component={Admin} />
         <Route path="/pmtutorsadmin/jobs" exact component={Jobs} />

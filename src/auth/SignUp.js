@@ -8,50 +8,61 @@ import { MdEmail } from "react-icons/md";
 import { Link, Redirect } from "react-router-dom";
 import useStyles from "./css/signup.min.js"
 import { connect, useSelector } from "react-redux";
-import {signUp} from "../store/actions/authAction"
+import { signUp } from "../store/actions/authAction"
+import fb from "../config/fbConfig"
 
 
 
 const SignUp = ({ history, signUp }) => {
-    const {firebase} = useSelector((state) => ({...state}))
+  const { firebase } = useSelector((state) => ({ ...state }))
 
-    const classes = useStyles();
+  const classes = useStyles();
 
 
-  
-    const [state, setState] = useState({
-      firstname: "",
-      lastname: "",
-      username:"",
-      email: "",
-      password: "",
+
+  const [state, setState] = useState({
+    firstname: "",
+    lastname: "",
+    username: "",
+    email: "",
+    password: "",
+  });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    // let name = `${state.firstname} ${state.lastname}`;
+    signUp(state);
+    // console.log(r);
+    history.push("/profile");
+
+    // console.log(name, state.email, state.password);
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setState({
+      ...state,
+      [name]: value,
     });
-  
-    const handleSubmit = async (e) => {
-      e.preventDefault();
-      // let name = `${state.firstname} ${state.lastname}`;
-      signUp(state);
-          // console.log(r);
-      history.push("/profile");
-  
-      // console.log(name, state.email, state.password);
-    };
-  
-    const handleChange = (e) => {
-      const { name, value } = e.target;
-  
-      setState({
-        ...state,
-        [name]: value,
-      });
-    };
-  
-    return (
-      <div>
-        {firebase.auth && firebase.auth.uid ?
+  };
+
+  const getLevel = () => {
+    fb.firestore().collection("clients").doc(firebase.auth.uid).get()
+      .then(r => {
+        return r.data().level;
+      })
+  }
+
+  return (
+    <div>
+      {firebase.auth && firebase.auth.uid ?
+        getLevel === "to_vet" ?
+          console.log("TO vet")
+          :
           <Redirect to="/dashboard" />
-            :
-          <Container className={classes.root} maxWidth="md" spacing={3}>
+        :
+        <Container className={classes.root} maxWidth="md" spacing={3}>
           <Grid item md={8} sm={9} xs={12}>
             <Paper className={classes.paper}>
               <h3 className={classes.head}>SIGN-UP</h3>
@@ -59,7 +70,7 @@ const SignUp = ({ history, signUp }) => {
               <Button
                 style={{ padding: "10px 20px", maxWidth: "400px" }}
                 variant="contained"
-                // onClick
+              // onClick
               >
                 <FcGoogle style={{ fontSize: "24px", marginRight: "8px" }} /> Sign
                 Up with Google
@@ -83,7 +94,7 @@ const SignUp = ({ history, signUp }) => {
                   alignItems="flex-end"
                 >
                   <AccountCircle style={{ fontSize: "25px" }} />
-  
+
                   <TextField
                     // id="input-with-icon-grid-1"
                     fullWidth
@@ -95,9 +106,9 @@ const SignUp = ({ history, signUp }) => {
                     onChange={handleChange}
                   />
                 </Grid>
-  
+
                 <br />
-  
+
                 <Grid
                   container
                   className={classes.field}
@@ -105,7 +116,7 @@ const SignUp = ({ history, signUp }) => {
                   alignItems="flex-end"
                 >
                   <AccountCircle style={{ fontSize: "25px" }} />
-  
+
                   <TextField
                     // id="input-with-icon-grid-2"
                     fullWidth
@@ -116,9 +127,9 @@ const SignUp = ({ history, signUp }) => {
                     onChange={handleChange}
                   />
                 </Grid>
-  
+
                 <br />
-  
+
                 <Grid
                   container
                   className={classes.field}
@@ -126,7 +137,7 @@ const SignUp = ({ history, signUp }) => {
                   alignItems="flex-end"
                 >
                   <AccountCircle style={{ fontSize: "25px" }} />
-  
+
                   <TextField
                     // id="input-with-icon-grid-2"
                     fullWidth
@@ -134,12 +145,12 @@ const SignUp = ({ history, signUp }) => {
                     name="username"
                     label="Input username"
                     value={state.username}
-                    onChange={(e) => setState({...state, username : e.target.value})}
+                    onChange={(e) => setState({ ...state, username: e.target.value })}
                   />
                 </Grid>
-  
+
                 <br />
-  
+
                 <Grid
                   container
                   className={classes.field}
@@ -147,7 +158,7 @@ const SignUp = ({ history, signUp }) => {
                   alignItems="flex-end"
                 >
                   <MdEmail style={{ fontSize: "25px" }} />
-  
+
                   <TextField
                     // id="input-with-icon-grid-2"
                     fullWidth
@@ -160,7 +171,7 @@ const SignUp = ({ history, signUp }) => {
                   />
                 </Grid>
                 <br />
-  
+
                 {/* Password */}
                 <Grid
                   container
@@ -169,7 +180,7 @@ const SignUp = ({ history, signUp }) => {
                   alignItems="flex-end"
                 >
                   <Lock style={{ fontSize: "25px" }} />
-  
+
                   <TextField
                     // id="input-with-icon-grid-4"
                     fullWidth
@@ -185,7 +196,7 @@ const SignUp = ({ history, signUp }) => {
                 {/* Forgot passowrd */}
                 <Link to="/">Forgot password?</Link>
                 <br />
-  
+
                 {/* Submit button */}
                 <Button
                   size="large"
@@ -199,7 +210,7 @@ const SignUp = ({ history, signUp }) => {
                 </Button>
                 <br />
               </form>
-  
+
               {/* register if no account */}
               <span>
                 Already have an account?
@@ -208,21 +219,21 @@ const SignUp = ({ history, signUp }) => {
             </Paper>
           </Grid>
         </Container>
-        }
-      </div>
-    );
-  };
+      }
+    </div>
+  );
+};
 
-  const mapStateToProps = (state) =>{
-    return {
-      auth: state.firebase.auth
-    }
+const mapStateToProps = (state) => {
+  return {
+    auth: state.firebase.auth
   }
+}
 
-  const mapDispatchToProps = (dispatch) =>{
-    return {
-      signUp : (newUser) => dispatch(signUp(newUser))
-    }
+const mapDispatchToProps = (dispatch) => {
+  return {
+    signUp: (newUser) => dispatch(signUp(newUser))
   }
-  
-  export default connect(mapStateToProps, mapDispatchToProps)(SignUp);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignUp);

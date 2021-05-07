@@ -8,6 +8,7 @@ import { Link, Redirect } from "react-router-dom";
 import useStyles from "./css/login.min.js"
 import { connect, useSelector } from "react-redux";
 import { signIn } from "../store/actions/authAction.js";
+import fb from "../config/fbConfig";
 const Login = (props) => {
   // const {history} = props; 
 
@@ -24,6 +25,8 @@ const Login = (props) => {
     email: "",
     password: "",
   });
+  const [isLoading, setIsLoading] = useState(false)
+  const [level, setLevel] = useState("")
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,6 +35,8 @@ const Login = (props) => {
 
     // history.push("/dashboard");
   };
+
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -42,11 +47,26 @@ const Login = (props) => {
     });
   };
 
-  return (
-    <>
-      { (auth && auth.uid) ?
+  useState(() => {
+    const getLevel = () => {
+      setIsLoading(true)
+      fb.firestore().collection("clients").doc(auth.uid).get()
+        .then(r => {
+          // console.log(r.data().level)
+          setLevel(r.data().level);
+          setIsLoading(false)
+        })
+    }
 
-        <Redirect to="/dashboard" />
+    getLevel()
+  }, [])
+  return (
+    !isLoading && <>
+      { (auth && auth.uid) ?
+        level === "to_vet" || level === "vet_declined" ?
+          < Redirect to="/vetting" />
+          :
+          <Redirect to="/dashboard" />
 
         :
 

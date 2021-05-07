@@ -19,3 +19,12 @@ Display Submitted Job:
   On component mount get Job from submitted database
   map job to state as well as attachments
 
+vetting:
+  onUpload
+  add vet to vets db with:
+    title
+    attachments
+    uploadedby:
+      username
+      id
+    uploadedat
