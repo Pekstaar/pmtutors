@@ -52,18 +52,21 @@ const Login = (props) => {
       setIsLoading(true)
       fb.firestore().collection("clients").doc(auth.uid).get()
         .then(r => {
-          // console.log(r.data().level)
-          setLevel(r.data().level);
-          setIsLoading(false)
+          if (r && r.data() && r.data().level) {
+            // console.log(r.data().level)
+            setLevel(r.data().level);
+            setIsLoading(false)
+          }
+          return
         })
     }
 
     getLevel()
   }, [])
   return (
-    !isLoading && <>
+    isLoading && <>
       { (auth && auth.uid) ?
-        level === "to_vet" || level === "vet_declined" ?
+        (level && level === "to_vet") || (level && level === "vet_declined") ?
           < Redirect to="/vetting" />
           :
           <Redirect to="/dashboard" />

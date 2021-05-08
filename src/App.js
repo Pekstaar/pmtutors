@@ -8,6 +8,7 @@ import Admin from './admin/Admin'
 import Jobs from "./admin/pages/Jobs";
 import Vet from "./admin/pages/Vet";
 import JobSubmitted from "./admin/pages/JobSubmitted"
+import SubmittedVets from "./admin/pages/SubmittedVets"
 import Login from "./auth/Login";
 import SignUp from "./auth/SignUp";
 import Dashboard from "./pages/Dashboard"
@@ -19,8 +20,17 @@ import MyJobs from "./pages/MyJobs";
 import Clients from "./admin/pages/Clients";
 import SubmittedJobs from "./admin/pages/SubmittedJobs";
 import Vetting from "./pages/Vetting";
+import VetSubmitted from "./admin/pages/VetSubmitted";
+import { signOut } from "./store/actions/authAction";
+import { connect } from "react-redux";
+import { useEffect } from "react";
 
-const App = () => {
+const App = (props) => {
+
+  useEffect(() => {
+    window.addEventListener('unload', () => props.endSession())
+  }, [])
+
   return (
     <div className="App">
       <NotificationContainer />
@@ -34,17 +44,26 @@ const App = () => {
         <PrivateRoute path="/myjobs" component={MyJobs} />
         <PrivateRoute path="/profile" component={Profile} />
         <PrivateRoute path="/dashboard" component={Dashboard} />
-        <PrivateRoute path="/vetting" component={Vetting} />
+        <Route path="/vetting" component={Vetting} />
         <PrivateRoute path="/quiz/:slug" component={Quiz} />
         <Route path="/pmtutorsadmin" exact component={Admin} />
         <Route path="/pmtutorsadmin/jobs" exact component={Jobs} />
         <Route path="/pmtutorsadmin/jobs/submitted" exact component={SubmittedJobs} />
         <Route path="/pmtutorsadmin/jobs/submitted/:slug" component={JobSubmitted} />
-        <Route path="/pmtutorsadmin/vets" component={Vet} />
+        <Route path="/pmtutorsadmin/vets" exact component={Vet} />
+        <Route path="/pmtutorsadmin/vets/submitted" exact component={SubmittedVets} />
+        <Route path="/pmtutorsadmin/vets/submitted/:slug" component={VetSubmitted} />
         <Route path="/pmtutorsadmin/clients" component={Clients} />f
       </Switch>
+
     </div>
   )
 }
 
-export default App;
+const mapDispatchToProps = (dispatch) => {
+  return {
+    endSession: () => dispatch(signOut())
+  }
+}
+
+export default connect(null, mapDispatchToProps)(App);

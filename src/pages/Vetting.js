@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import {
-    Button,
     Container,
     FormControl,
     FormHelperText,
@@ -18,12 +17,13 @@ import firebase from "../config/fbConfig"
 
 // import { useAuth } from "../context/auth_context";
 import useStyles from "../styling/vetting.min.js"
-import { connect, useSelector } from "react-redux";
+import { connect } from "react-redux";
 import LinearProgressWithLabel from "../components/progress";
 import { NotificationManager } from "react-notifications";
 import { compose } from "redux";
 import { firestoreConnect } from "react-redux-firebase";
 import { CloudUpload } from "@material-ui/icons";
+import { Redirect } from "react-router";
 // import { NotificationManager } from "react-notifications";
 
 
@@ -68,8 +68,8 @@ const Vetting = (props) => {
     }
 
     useEffect(() => {
+        let list = []
         const getTasks = () => {
-            let list = []
             fb.firestore().collection("vets").get()
                 .then(docs => docs.forEach(doc => list.push(doc.data())))
                 .then(() => setTaskList([...list]))
@@ -78,7 +78,7 @@ const Vetting = (props) => {
             // if (myvet.data().attachments !== undefined) {
             if (window.localStorage.getItem("question")) {
                 setTask(window.localStorage.getItem("question"))
-                return
+                // return
             }
             myvet.get()
                 .then(r => {
@@ -94,129 +94,141 @@ const Vetting = (props) => {
     }, []);
 
     return (
-        <div style={{
-            backgroundImage: `linear-gradient(to bottom, rgba(245, 246, 252, 0.52), rgba(190, 20, 93, 0.63)), url(${img})`,
-        }}>
-            <Container className={classes.root} maxWidth="md" spacing={3}>
-                <Grid item md={8} sm={9} xs={12}>
-                    <Paper className={classes.paper}>
-                        <h3 className={classes.head}>VETTING</h3>
-                        {/* login with google button */}
-                        <div>
-                            <h5>Task requirements:</h5>
-                            <li>350-500 words (not more than 500)</li>
+        <>
+            {
+                client && client.level && client.level === "beginner" ?
+                    <>
+                        {NotificationManager.success("You were approved!")}
+                        < Redirect to="/profile" />
+                    </>
+                    :
+                    < div style={{
+                        backgroundImage: `linear-gradient(to bottom, rgba(245, 246, 252, 0.52), rgba(190, 20, 93, 0.63)), url(${img})`, backgroundRepeat: "no-repeat",
+                        backgroundSize: "cover"
+                    }
+                    }>
+                        <Container className={classes.root} maxWidth="md" spacing={3}>
+                            <Grid item md={8} sm={9} xs={12}>
+                                <Paper className={classes.paper}>
+                                    <h3 className={classes.head}>VETTING</h3>
+                                    {/* login with google button */}
+                                    <div>
+                                        <h5>Task requirements:</h5>
+                                        <li>350-500 words (not more than 500)</li>
 
-                            <li>0% plagiarism</li>
+                                        <li>0% plagiarism</li>
 
-                            <li>Proper grammar and no spelling mistakes.</li>
+                                        <li>Proper grammar and no spelling mistakes.</li>
 
-                            <li>
-                                Atleast one occurrence of the following punctuation marks.
+                                        <li>
+                                            Atleast one occurrence of the following punctuation marks.
                              </li>
-                            <div className={classes.list_container}>
-                                <ul className={classes.list}>
-                                    <li>Commas</li>
-                                    <li>Colons</li>
-                                    <li>SemiColons</li>
-                                    <li>Exclamation marks</li>
-                                    <li>Quotation marks</li>
-                                </ul>
-                                <ul className={classes.list}>
-                                    <li>Apostrophe</li>
-                                    <li>Parentheses</li>
-                                    <li>Dashes</li>
-                                    <li>Hyphens </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <span>
-                            <strong>FORMAT:</strong> APA DOCUMENTATION
-                        </span>
-                        <br />
-
-                        {/* tasks dropdown */}
-                        {/* {initialClientTasks.map((t) => console.log(t.index, t.value))} */}
-                        {
-                            attachments ?
-                                client && client.level === "to_vet" ?
-                                    <>
-                                        <br />
-                                        <div style={{ textAlign: "center", padding: ".5em", backgroundColor: 'rgba(0,0,0,0.2)', fontWeight: "lighter", fontStyle: "italic", fontFamily: "Roboto" }}>
-                                            <p> Await approval of your uploaded test by pmtutors admin <br /> approval may take 12-24 hours <br /> <strong>Thankyou!</strong></p>
+                                        <div className={classes.list_container}>
+                                            <ul className={classes.list}>
+                                                <li>Commas</li>
+                                                <li>Colons</li>
+                                                <li>SemiColons</li>
+                                                <li>Exclamation marks</li>
+                                                <li>Quotation marks</li>
+                                            </ul>
+                                            <ul className={classes.list}>
+                                                <li>Apostrophe</li>
+                                                <li>Parentheses</li>
+                                                <li>Dashes</li>
+                                                <li>Hyphens </li>
+                                            </ul>
                                         </div>
-                                    </>
-                                    :
-                                    <>
-                                        <br />
-                                        <div style={{ textAlign: "center", padding: ".5em", backgroundColor: 'rgba(0,0,0,0.2)', fontWeight: "lighter", fontStyle: "italic", fontFamily: "Roboto" }}>
-                                            <p> Please Check your email for more information about your task
+                                    </div>
+                                    <span>
+                                        <strong>FORMAT:</strong> APA DOCUMENTATION
+                        </span>
+                                    <br />
+
+                                    {/* tasks dropdown */}
+                                    {/* {initialClientTasks.map((t) => console.log(t.index, t.value))} */}
+                                    {
+                                        attachments ?
+                                            client && client.level === "to_vet" ?
+                                                <>
+                                                    <br />
+                                                    <div style={{ textAlign: "center", padding: ".5em", backgroundColor: 'rgba(0,0,0,0.2)', fontWeight: "lighter", fontStyle: "italic", fontFamily: "Roboto" }}>
+                                                        <p> Await approval of your uploaded test by pmtutors admin <br /> approval may take 12-24 hours <br /> <strong>Thankyou!</strong></p>
+                                                    </div>
+                                                </>
+                                                :
+                                                <>
+                                                    <br />
+                                                    <div style={{ textAlign: "center", padding: ".5em", backgroundColor: 'rgba(0,0,0,0.2)', fontWeight: "lighter", fontStyle: "italic", fontFamily: "Roboto" }}>
+                                                        <p> Please Check your email for more information about your task
                                             <br />
                                             for more information
                                             <br />
-                                                <strong>Contact us: pmtutors@gmail.com</strong></p>
-                                        </div>
-                                    </>
-                                :
-                                <>
-                                    <span style={{ backgroundColor: "rgba(0,0,0,0.2)", fontWeight: "bold", margin: "0 2em" }}>
-                                        <strong>YOUR TASK:</strong> <u>{task}</u>
-                                    </span>
-                                    <br />
-                                    <FormControl
-                                        style={{ width: "80%" }}
-                                        className={classes.formControl}
-                                        disabled={selectState}
-                                    >
-                                        <Select
-                                            value={task}
-                                            onChange={handleChange}
-                                            autoWidth
-                                            displayEmpty
-                                            className={classes.selectEmpty}
-                                            inputProps={{ "aria-label": "Without label" }}
-                                            fullWidth
-                                            style={{ width: "100%" }}
-                                        >
-                                            <MenuItem value="" disabled>
-                                                Choose a task from the list below:
-                                </MenuItem>
-                                            {taskList &&
-                                                taskList.map((task, k) => (
-                                                    <MenuItem key={k} value={task.question}>
-                                                        {task.question}
-                                                    </MenuItem>
-                                                ))}
-                                            <MenuItem value="_" disabled></MenuItem>
-                                        </Select>
-                                        <FormHelperText>Tasks</FormHelperText>
-                                    </FormControl>
-
-                                    <div className={classes.upload}>
-                                        {attachments ?
-                                            <Paper style={{ width: "160px", height: "120px", background: "#fff", display: "flex" }}>
-                                                <CloudUpload style={{ fontSize: "60px", margin: "auto   " }} />
-                                            </Paper>
+                                                            <strong>Contact us: pmtutors@gmail.com</strong></p>
+                                                    </div>
+                                                </>
                                             :
+                                            <>
+                                                <span style={{ backgroundColor: "rgba(0,0,0,0.2)", fontWeight: "bold", margin: "0 2em" }}>
+                                                    <strong>YOUR TASK:</strong> <u>{task}</u>
+                                                </span>
+                                                <br />
+                                                <FormControl
+                                                    style={{ width: "80%" }}
+                                                    className={classes.formControl}
+                                                    disabled={selectState}
+                                                >
+                                                    <Select
+                                                        value={task}
+                                                        onChange={handleChange}
+                                                        autoWidth
+                                                        displayEmpty
+                                                        className={classes.selectEmpty}
+                                                        inputProps={{ "aria-label": "Without label" }}
+                                                        fullWidth
+                                                        style={{ width: "100%" }}
+                                                    >
+                                                        <MenuItem value="" disabled>
+                                                            Choose a task from the list below:
+                                         </MenuItem>
+                                                        {taskList &&
+                                                            taskList.map((task, k) => (
+                                                                <MenuItem key={k} value={task.question}>
+                                                                    {task.question}
+                                                                </MenuItem>
+                                                            ))}
+                                                        <MenuItem value="_" disabled></MenuItem>
+                                                    </Select>
+                                                    <FormHelperText>Tasks</FormHelperText>
+                                                </FormControl>
 
-                                            "upload item here!"
-                                        }
-                                    </div>
-                                    <br />
-                                    <Upload task={task} submit={submitUpload} setProgress={setProgress} id={auth.uid} setAttachments={setAttachments} setDisplayProgress={setDisplayProgress} />
+                                                <div className={classes.upload}>
+                                                    {attachments ?
+                                                        <Paper style={{ width: "160px", height: "120px", background: "#fff", display: "flex" }}>
+                                                            <CloudUpload style={{ fontSize: "60px", margin: "auto   " }} />
+                                                        </Paper>
+                                                        :
 
-                                    {displayProgress ?
-                                        <div className={classes.progress}>
-                                            <LinearProgressWithLabel value={progress && progress} />
-                                        </div>
-                                        :
-                                        ""
+                                                        "upload item here!"
+                                                    }
+                                                </div>
+                                                <br />
+                                                <Upload task={task} submit={submitUpload} setProgress={setProgress} id={auth.uid} setAttachments={setAttachments} setDisplayProgress={setDisplayProgress} />
+
+                                                {displayProgress ?
+                                                    <div className={classes.progress}>
+                                                        <LinearProgressWithLabel value={progress && progress} />
+                                                    </div>
+                                                    :
+                                                    ""
+                                                }
+                                            </>
                                     }
-                                </>
-                        }
-                    </Paper>
-                </Grid>
-            </Container>
-        </div>
+                                </Paper>
+                            </Grid>
+                        </Container>
+                    </ div>
+            }
+        </>
     );
 };
 const mapStateToProps = (state) => {

@@ -31,6 +31,14 @@ const PageHeader = (props) => {
         :
         ""
       }
+      {props.displayVetButtons ?
+        <>
+          <Link style={{ textDecoration: "none" }} to="/pmtutorsadmin/vets"><Button style={{ height: "50px" }} variant="contained" color="secondary" >Manage Test questions</Button></Link>
+          <Link style={{ textDecoration: "none" }} to="/pmtutorsadmin/vets/submitted"><Button style={{ height: "50px" }} variant="contained" color="primary">Submitted Tests</Button></Link>
+        </>
+        :
+        ""
+      }
     </Paper>
   );
 };

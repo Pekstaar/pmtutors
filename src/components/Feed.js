@@ -59,7 +59,7 @@ const Feed = (props) => {
     }
 
     getData()
-  }, [])
+  }, [props.user.uid])
 
   return (
     <Grid

@@ -19,7 +19,8 @@ const SignUp = ({ history, signUp }) => {
   const classes = useStyles();
 
 
-
+  const [level, setLevel] = useState();
+  const [isLoading, setIsLoading] = useState(false)
   const [state, setState] = useState({
     firstname: "",
     lastname: "",
@@ -47,180 +48,197 @@ const SignUp = ({ history, signUp }) => {
     });
   };
 
-  const getLevel = () => {
-    fb.firestore().collection("clients").doc(firebase.auth.uid).get()
-      .then(r => {
-        return r.data().level;
-      })
-  }
+
+
+  useState(() => {
+    const getLevel = () => {
+      setIsLoading(true)
+
+      fb.firestore().collection("clients").doc(firebase.auth.uid).get()
+        .then(r => {
+          if (r && r.data() && r.data().level) {
+
+            setLevel(r.data().level);
+
+            setIsLoading(false)
+
+          }
+          return
+        })
+    }
+    getLevel()
+  }, [])
 
   return (
-    <div>
-      {firebase.auth && firebase.auth.uid ?
-        getLevel === "to_vet" ?
-          console.log("TO vet")
+    isLoading && <>
+      {
+        firebase.auth && firebase.auth.uid ?
+          (level && level === "to_vet") || (level && level === "vet_declined") ?
+            < Redirect to="/vetting" />
+            :
+            <Redirect to="/dashboard" />
           :
-          <Redirect to="/dashboard" />
-        :
-        <Container className={classes.root} maxWidth="md" spacing={3}>
-          <Grid item md={8} sm={9} xs={12}>
-            <Paper className={classes.paper}>
-              <h3 className={classes.head}>SIGN-UP</h3>
-              {/* login with google button */}
-              <Button
-                style={{ padding: "10px 20px", maxWidth: "400px" }}
-                variant="contained"
-              // onClick
-              >
-                <FcGoogle style={{ fontSize: "24px", marginRight: "8px" }} /> Sign
+          <div>
+            <Container className={classes.root} maxWidth="md" spacing={3}>
+              <Grid item md={8} sm={9} xs={12}>
+                <Paper className={classes.paper}>
+                  <h3 className={classes.head}>SIGN-UP</h3>
+                  {/* login with google button */}
+                  <Button
+                    style={{ padding: "10px 20px", maxWidth: "400px" }}
+                    variant="contained"
+                  // onClick
+                  >
+                    <FcGoogle style={{ fontSize: "24px", marginRight: "8px" }} /> Sign
                 Up with Google
               </Button>
-              <span style={{ color: "gray" }}>or signup with:</span>
-              {/* Inputs */}
-              <form
-                style={{
-                  width: "100%",
-                  display: "flex",
-                  alignItems: "center",
-                  flexDirection: "column",
-                }}
-                onSubmit={handleSubmit}
-                className={classes.margin}
-              >
-                <Grid
-                  container
-                  className={classes.field}
-                  spacing={1}
-                  alignItems="flex-end"
-                >
-                  <AccountCircle style={{ fontSize: "25px" }} />
+                  <span style={{ color: "gray" }}>or signup with:</span>
+                  {/* Inputs */}
+                  <form
+                    style={{
+                      width: "100%",
+                      display: "flex",
+                      alignItems: "center",
+                      flexDirection: "column",
+                    }}
+                    onSubmit={handleSubmit}
+                    className={classes.margin}
+                  >
+                    <Grid
+                      container
+                      className={classes.field}
+                      spacing={1}
+                      alignItems="flex-end"
+                    >
+                      <AccountCircle style={{ fontSize: "25px" }} />
 
-                  <TextField
-                    // id="input-with-icon-grid-1"
-                    fullWidth
-                    type="text"
-                    name="firstname"
-                    label="Input First name"
-                    required
-                    value={state.firstname}
-                    onChange={handleChange}
-                  />
-                </Grid>
+                      <TextField
+                        // id="input-with-icon-grid-1"
+                        fullWidth
+                        type="text"
+                        name="firstname"
+                        label="Input First name"
+                        required
+                        value={state.firstname}
+                        onChange={handleChange}
+                      />
+                    </Grid>
 
-                <br />
+                    <br />
 
-                <Grid
-                  container
-                  className={classes.field}
-                  spacing={1}
-                  alignItems="flex-end"
-                >
-                  <AccountCircle style={{ fontSize: "25px" }} />
+                    <Grid
+                      container
+                      className={classes.field}
+                      spacing={1}
+                      alignItems="flex-end"
+                    >
+                      <AccountCircle style={{ fontSize: "25px" }} />
 
-                  <TextField
-                    // id="input-with-icon-grid-2"
-                    fullWidth
-                    type="text"
-                    name="lastname"
-                    label="Input lastname"
-                    value={state.lastname}
-                    onChange={handleChange}
-                  />
-                </Grid>
+                      <TextField
+                        // id="input-with-icon-grid-2"
+                        fullWidth
+                        type="text"
+                        name="lastname"
+                        label="Input lastname"
+                        value={state.lastname}
+                        onChange={handleChange}
+                      />
+                    </Grid>
 
-                <br />
+                    <br />
 
-                <Grid
-                  container
-                  className={classes.field}
-                  spacing={1}
-                  alignItems="flex-end"
-                >
-                  <AccountCircle style={{ fontSize: "25px" }} />
+                    <Grid
+                      container
+                      className={classes.field}
+                      spacing={1}
+                      alignItems="flex-end"
+                    >
+                      <AccountCircle style={{ fontSize: "25px" }} />
 
-                  <TextField
-                    // id="input-with-icon-grid-2"
-                    fullWidth
-                    type="text"
-                    name="username"
-                    label="Input username"
-                    value={state.username}
-                    onChange={(e) => setState({ ...state, username: e.target.value })}
-                  />
-                </Grid>
+                      <TextField
+                        // id="input-with-icon-grid-2"
+                        fullWidth
+                        type="text"
+                        name="username"
+                        label="Input username"
+                        value={state.username}
+                        onChange={(e) => setState({ ...state, username: e.target.value })}
+                      />
+                    </Grid>
 
-                <br />
+                    <br />
 
-                <Grid
-                  container
-                  className={classes.field}
-                  spacing={1}
-                  alignItems="flex-end"
-                >
-                  <MdEmail style={{ fontSize: "25px" }} />
+                    <Grid
+                      container
+                      className={classes.field}
+                      spacing={1}
+                      alignItems="flex-end"
+                    >
+                      <MdEmail style={{ fontSize: "25px" }} />
 
-                  <TextField
-                    // id="input-with-icon-grid-2"
-                    fullWidth
-                    type="email"
-                    name="email"
-                    label="Input email"
-                    required
-                    value={state.email}
-                    onChange={handleChange}
-                  />
-                </Grid>
-                <br />
+                      <TextField
+                        // id="input-with-icon-grid-2"
+                        fullWidth
+                        type="email"
+                        name="email"
+                        label="Input email"
+                        required
+                        value={state.email}
+                        onChange={handleChange}
+                      />
+                    </Grid>
+                    <br />
 
-                {/* Password */}
-                <Grid
-                  container
-                  className={classes.field}
-                  spacing={1}
-                  alignItems="flex-end"
-                >
-                  <Lock style={{ fontSize: "25px" }} />
+                    {/* Password */}
+                    <Grid
+                      container
+                      className={classes.field}
+                      spacing={1}
+                      alignItems="flex-end"
+                    >
+                      <Lock style={{ fontSize: "25px" }} />
 
-                  <TextField
-                    // id="input-with-icon-grid-4"
-                    fullWidth
-                    type="password"
-                    name="password"
-                    label="Input Password"
-                    required
-                    value={state.password}
-                    onChange={handleChange}
-                  />
-                </Grid>
-                <br />
-                {/* Forgot passowrd */}
-                <Link to="/">Forgot password?</Link>
-                <br />
+                      <TextField
+                        // id="input-with-icon-grid-4"
+                        fullWidth
+                        type="password"
+                        name="password"
+                        label="Input Password"
+                        required
+                        value={state.password}
+                        onChange={handleChange}
+                      />
+                    </Grid>
+                    <br />
+                    {/* Forgot passowrd */}
+                    <Link to="/">Forgot password?</Link>
+                    <br />
 
-                {/* Submit button */}
-                <Button
-                  size="large"
-                  style={{ width: "70%" }}
-                  fullWidth
-                  variant="contained"
-                  color="secondary"
-                  type="submit"
-                >
-                  SIGNUP
+                    {/* Submit button */}
+                    <Button
+                      size="large"
+                      style={{ width: "70%" }}
+                      fullWidth
+                      variant="contained"
+                      color="secondary"
+                      type="submit"
+                    >
+                      SIGNUP
                 </Button>
-                <br />
-              </form>
+                    <br />
+                  </form>
 
-              {/* register if no account */}
-              <span>
-                Already have an account?
+                  {/* register if no account */}
+                  <span>
+                    Already have an account?
                 <Link to="/login">Click here to Login</Link>
-              </span>
-            </Paper>
-          </Grid>
-        </Container>
+                  </span>
+                </Paper>
+              </Grid>
+            </Container>
+          </div>
       }
-    </div>
+    </>
   );
 };
 
