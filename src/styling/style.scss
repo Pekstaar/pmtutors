@@ -1,0 +1,299 @@
+/* imports */
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100;200;300;400;500;600;700;800;900&display=swap");
+
+/* :root { */
+$--gray-800: #343a40;
+$--white: #fff;
+$--btn-red: #f50057;
+$--bg-red: #d95959;
+
+$--font-slab: "Roboto Slab";
+/* } */
+/* Navigation Bar */
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: content-box;
+}
+
+body {
+  font-family: "Roboto";
+}
+
+h5 {
+  margin: 0;
+}
+
+a {
+  text-decoration: none;
+}
+
+.lighter{
+  font-weight: 200;
+}
+
+.slab{
+  font-family: "Roboto Slab";
+}
+
+.nav-container {
+  display: grid;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.navbar {
+  font-size: 15px;
+  top: 0;
+  z-index: 100;
+  background-color: #fff !important;
+}
+
+.navbar h5 {
+  font-size: 18px;
+  color: var(--gray-800) !important;
+}
+
+.navbar .nav-logo i {
+  font-size: 22px;
+}
+
+.navbar .navbar-toggler,
+.navbar-toggler:active {
+  border: none;
+  // outline: none !important;
+  box-shadow: none;
+  border-color: white !important;
+}
+
+.navbar-toggler:focus {
+  border: 1px solid $--btn-red !important;
+}
+
+.navbar ul li .nav-link {
+  color: rgba(0, 0, 0, 1) !important;
+  /* font-weight: 600; */
+}
+
+.navbar ul li .nav-link:hover {
+  color: blue !important;
+  /* font-weight: 600; */
+}
+
+.navbar ul div .btn {
+  font-weight: bold;
+  display: grid;
+  place-items: center;
+  font-size: 14px;
+  text-transform: uppercase;
+  // text-transform: uppercase;
+}
+
+.navbar ul div .btn:nth-child(2) {
+  background-color: $--btn-red !important;
+  border: none;
+}
+
+// carousel
+.carousel {
+  overflow: hidden;
+}
+
+.carousel img {
+  height: 75vh;
+  object-fit: cover;
+}
+
+.carousel-indicators button {
+  background-color: #fff;
+}
+
+.carousel-floater {
+  background: linear-gradient(150deg, #f5005772, #a637c140);
+  color: #fff;
+  padding: 5em 6em;
+}
+
+ .our-offers-inner .icon{
+  color: #d95959;
+  font-size: 40px;
+}
+
+.carousel-floater div button {
+  width: 11rem;
+  height: 3em;
+  font-size: 17px;
+  border-radius: 2em;
+}
+
+.carousel-floater div button:nth-child(2) {
+  background-color: $--btn-red !important;
+}
+
+// Our offers
+.our-offers{
+  width: 98%;
+  margin: auto;
+}
+.our-offers h4 {
+  font-family: $--font-slab;
+  border-bottom: 2px solid $--bg-red;
+}
+
+.our-offers-inner {
+  background-color: #dfd7f282;
+  height: auto;
+  border-radius: 1em;
+  padding-bottom: 2em;
+  // max-width: 98%;
+}
+
+.our-offers-inner .our-offer-exp span{
+  // margin-top:1em;
+  background-color: #d95959;
+  font-family: "Roboto Slab";
+  color: $--white;
+  font-size: 28px;
+}
+
+.our-offers-inner .our-offer-exp :nth-child(1){
+  transform: rotate(-1deg);
+  // width: 95%;
+}
+.our-offers-inner .our-offer-exp :nth-child(2){
+  margin-top: 8px;
+  font-size: 23px;
+  // width: 80%;
+}
+
+// levels
+.levels .stage{
+  display: grid;
+  grid-template-columns: 1fr 4fr;
+  background-color: #e2bbbb !important;
+  padding: .2em;
+  padding-left: .8em;
+  align-items: center;  
+
+  h5{
+    font-size: 16px;
+  }
+
+  p{
+    font-size: 14px;
+    font-weight: 350;
+  }
+}
+
+.levels .large{
+  width: 40px;
+  height: 40px;
+}
+
+.about{
+  background-color: #d95959,
+}
+
+.about-heading{
+  color: #fff;
+  margin: 1em auto;
+  border-bottom: 2px solid whitesmoke;
+}
+
+.about-description{
+  color:white;
+}
+
+.about img{
+  object-fit: inherit;
+}
+
+// footer section
+.footer{
+  background-color: #2a2a2f;
+}
+
+.footer li a:hover{
+  border-bottom: 1px solid #fdfdfd ;
+}
+
+
+@media screen and (max-width: 950px) {
+  .carousel img {
+    height: 60vh;
+    object-fit: cover;
+  }
+}
+
+@media screen and (max-width: 580px) {
+  ::-webkit-scrollbar {
+    display: none;
+  }
+  .carousel-floater{
+    text-align: center;
+  }
+
+  .about{
+    width: 100%;
+    overflow: hidden;
+
+    img{
+      max-width: 550px;
+     object-fit: cover;
+    }
+  }
+
+  .our-offers{
+    width: 90%;
+    margin:auto;
+  }
+  .application-process{
+    width: 86%;
+    margin:auto;
+  }
+  // .nav-container ul li,
+  .nav-container ul {
+    padding-left: 2.2em;
+  }
+  // /buttons
+  .carousel-floater {
+    display: grid;
+    padding: 3em 0;
+    place-items: center;
+  }
+
+  .carousel-floater div .btn {
+    margin: .5em 0;
+    height: 2.2em ;
+    width: 8em ;
+  }
+  // carousel
+  .carousel-floater p {
+    display: none;
+  }
+  .our-offers-inner .our-offer-exp :nth-child(1){
+    font-size: 22px;
+  }
+
+  .our-offers-inner .our-offer-exp :nth-child(2){
+    font-size: 20px;
+  }
+
+  .footer ul{
+    margin-top: 1em;
+  }
+}
+
+@media screen and (max-width:750px){
+  .about{
+    width: 93%;
+  }
+  .footer{
+    width: 91%;
+
+  }
+  .stage{
+    width: 80%;
+  }
+}

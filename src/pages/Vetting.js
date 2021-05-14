@@ -94,11 +94,12 @@ const Vetting = (props) => {
     }, []);
 
     return (
-        <>
+        auth && !auth.uid ? <Redirect to="/login" /> : <>
             {
                 client && client.level && client.level === "beginner" ?
                     <>
                         {NotificationManager.success("You were approved!")}
+                        {window.localStorage.removeItem("question")}
                         < Redirect to="/profile" />
                     </>
                     :

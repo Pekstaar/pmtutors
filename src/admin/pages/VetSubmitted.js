@@ -137,4 +137,4 @@ const VetSubmitted = (props) => {
 };
 
 
-export default withStyles(useStyles)(VetSubmitted);
+export default (VetSubmitted);

@@ -9,11 +9,16 @@ import {
   FormHelperText,
   Grid,
   InputLabel,
+  Paper,
   Select,
 } from "@material-ui/core";
-import React from "react";
+import { Keyboard } from "@material-ui/icons";
+import React, { useEffect, useState } from "react";
+import { AiOutlineFileWord } from "react-icons/ai";
 import { TextValidator, ValidatorForm } from "react-material-ui-form-validator";
-import Upload from "../../components/uploader";
+import LinearProgressWithLabel from "../../components/progress";
+// import LinearProgressWithLabel from "../../components/progress";
+import Uploader from "./Uploader";
 
 const JobsDialog = (props) => {
   // styling
@@ -33,6 +38,12 @@ const JobsDialog = (props) => {
     category,
   } = props.jobDetails;
 
+  const [progress, setProgress] = useState(0)
+  const [displayProgress, setDisplayProgress] = useState(false)
+
+  useEffect(() => console.log(props.state), [])
+
+
   return (
     <Dialog
       fullWidth={true}
@@ -42,7 +53,7 @@ const JobsDialog = (props) => {
       aria-labelledby={"max-width-dialog-title"}
     >
       <DialogTitle>{props.formmode ? "Add" : "Update"} Task</DialogTitle>
-      <ValidatorForm onSubmit={props.addJob}>
+      <ValidatorForm onSubmit={(e) => props.addJob(e)}>
         <DialogContent>
           <Grid container spacing={3}>
             {/* title input */}
@@ -167,7 +178,7 @@ const JobsDialog = (props) => {
             {/* Select status */}
             <Grid item sm={3}>
               <FormControl style={{ width: "80%" }} required>
-                <InputLabel htmlFor="status-native-required">Status</InputLabel>
+                <InputLabel htmlFor="status-native-required"></InputLabel>
                 <Select
                   native
                   value={status}
@@ -189,8 +200,8 @@ const JobsDialog = (props) => {
             <Grid item sm={4}>
               <FormControl style={{ width: "75%" }}>
                 <InputLabel htmlFor="takenby-native-required">
-                  Taken By
-                  </InputLabel>
+                  {/* Taken By */}
+                </InputLabel>
                 <Select
                   native
                   variant="standard"
@@ -213,8 +224,8 @@ const JobsDialog = (props) => {
             <Grid item sm={5}>
               <FormControl style={{ width: "75%" }}>
                 <InputLabel htmlFor="category-native-required">
-                  Category
-                  </InputLabel>
+                  {/* Category */}
+                </InputLabel>
                 <Select
                   native
                   variant="standard"
@@ -236,7 +247,7 @@ const JobsDialog = (props) => {
                 <FormHelperText>Job Category:</FormHelperText>
               </FormControl>
             </Grid>
-            <Grid item sm={9}>
+            <Grid item sm={12}>
               <div
                 style={{
                   display: "flex",
@@ -245,21 +256,64 @@ const JobsDialog = (props) => {
                   margin: "0 auto",
                 }}
               >
-                <label>Attachments:</label>
-                <div
-                  style={{
-                    display: "grid",
-                    height: "200px",
-                    width: "500px",
-                    border: "1px dashed grey",
-                    placeItems: "center",
-                    marginBottom: "10px",
-                  }}
-                >
-                  <Upload>
-                    Select Task to Upload
-                  </Upload>
+                <h4 style={{ fontFamily: "Varela Round", fontWeight: "lighter", fontStyle: "italic" }}>Attachments:</h4>
+                <div style={{ display: "flex" }}>
+                  <div>
+                    <div
+                      style={{
+                        display: "grid",
+                        height: "200px",
+                        width: "500px",
+                        border: "1px dashed grey",
+                        placeItems: "center",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <Uploader values={props.state} setUploadProgress={setProgress} displayProg={setDisplayProgress} setData={props.setAttachments}
+                        id={props.id} />
+                    </div>
+                    {displayProgress ?
+                      <div style={{
+                        width: "50%",
+                        margin: "0 auto",
+                      }}>
+                        <LinearProgressWithLabel value={progress} />
+                      </div>
+                      :
+                      ""
+                    }
+                  </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr" }}>
+                    {
+                      props.state.attachments && props.state.attachments.map((doc, key) => {
+                        if ((doc.downloadURL) && doc.tag.includes("image")) {
+                          return (
+                            <div style={{ display: "inline-block", padding: "0 1em" }} key={key} >
+                              <Paper style={{ width: "160px", height: "120px", background: "#fff", display: "flex" }}>
+                                {/* <span style={{ fontSize: "40px", fontWeight: "bold", margin: "auto   " }} >.docx</span> */}
+                                <img src={`${doc.downloadURL}`} alt="uploaded doc" />
+                              </Paper>
+                              <span style={{ color: "blue", fontStyle: "italic" }}>{`${doc.downloadURL && doc.downloadURL.substring(16, 42)}. . .`}</span>
+                            </div>
+                          )
+                        }
+                        // doc.downloadURL &&
+                        else if (doc.downloadURL && (doc.tag.includes("octet") || doc.tag.includes("word"))) {
+                          return (
+                            <div style={{ display: "inline-block", padding: "0 1em" }} key={key} >
+                              < Paper style={{ width: "160px", height: "130px", background: "#fff", display: "flex" }}>
+                                <AiOutlineFileWord style={{ margin: "auto", fontSize: "130px" }} />
+                              </ Paper>
+                              <span style={{ color: "blue", fontStyle: "italic" }}>{`${doc.downloadURL && doc.downloadURL.substring(16, 42)}. . .`}</span>
+                            </div>
+                          )
+                        } return ("")
+
+                      })
+                    }
+                  </div>
                 </div>
+
               </div>
             </Grid>
           </Grid>
@@ -275,7 +329,7 @@ const JobsDialog = (props) => {
             </Button>
         </DialogActions>
       </ValidatorForm>
-    </Dialog>
+    </Dialog >
   );
 };
 

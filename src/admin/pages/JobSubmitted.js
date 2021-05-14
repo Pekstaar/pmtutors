@@ -25,6 +25,7 @@ const theme = createMuiTheme({
 
 const JobSubmitted = (props) => {
     const classes = useStyles()
+    // const { classes } = props;
 
     const [loading, setLoading] = useState(false)
 
@@ -110,18 +111,6 @@ const JobSubmitted = (props) => {
                                             </a>
                                         )
                                     }
-
-                                    // } else if (file.tag && file.tag.includes("image")) {
-                                    //     return (
-                                    //         <a href={`#`} style={{ cursor: "pointer" }}>
-                                    //             <Paper
-                                    //                 style={{ width: "150px", height: "150px", margin: "0 .2em" }}
-                                    //             >
-                                    //                 <img src={`#`} alt="upload file" />
-                                    //             </Paper>
-                                    //         </a>
-                                    //     )
-                                    // }
                                 })}
                             </div>
 
@@ -146,4 +135,4 @@ const JobSubmitted = (props) => {
 };
 
 
-export default withStyles(useStyles)(JobSubmitted);
+export default (JobSubmitted);
