@@ -30,6 +30,12 @@ vetting:
     uploadedat
 
 On job approval:
-  update myjobs job as completed
-  update job as completed also
-  
+  update myjobs job as completed <<
+  update job as completed also <<
+  add balance to tutor account <<
+  initialize payments db to contain:
+    - job id - primary key
+    - job title
+    - tutor name
+    - tutor id
+    - balance

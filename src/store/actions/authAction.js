@@ -47,7 +47,7 @@ export const signUp = (newUser) => {
                 residence: "",
                 about: "",
                 skills: "",
-                balance: "",
+                balance: 0,
                 study: "",
             })
                 .then(() => dispatch({ type: "SIGNUP_SUCCESS" }))
