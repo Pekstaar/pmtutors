@@ -30,7 +30,7 @@ const Feed = (props) => {
       window.alert("You are not allowed to take more jobs based on your Level. Complete atleast on more task in your cart so as to take another")
       return;
     }
-    if (isToTake > 1) {
+    if (isToTake >= 1) {
       return (window.location.pathname = `/quiz/${id}`)
     }
   }

@@ -50,7 +50,7 @@ class Upload extends React.Component {
 
     this.setState(oldState => ({
       // filenames: [...oldState.filenames, filename],
-      downloadData: [...oldState.downloadData, {
+      downloadData: [{
         downloadURL,
         tag: filemetadata.contentType,
       }],

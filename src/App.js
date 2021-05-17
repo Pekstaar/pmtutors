@@ -24,6 +24,10 @@ import VetSubmitted from "./admin/pages/VetSubmitted";
 import { signOut } from "./store/actions/authAction";
 import { connect } from "react-redux";
 import { useEffect } from "react";
+import { Register } from "./admin/auth/AdminSignUp";
+import Complete from "./admin/auth/Complete";
+import AdminRoute from "./routing/AdminRouter";
+import AdminLogin from "./admin/auth/Login";
 
 const App = (props) => {
 
@@ -42,18 +46,22 @@ const App = (props) => {
         <Route path="/signup" component={SignUp} />
         <PrivateRoute path="/quiz" exact component={QuizBank} />
         <PrivateRoute path="/myjobs" component={MyJobs} />
+        {/* <Route path="/index" component={index} /> */}
         <PrivateRoute path="/profile" component={Profile} />
         <PrivateRoute path="/dashboard" component={Dashboard} />
         <Route path="/vetting" component={Vetting} />
         <PrivateRoute path="/quiz/:slug" component={Quiz} />
-        <Route path="/pmtutorsadmin" exact component={Admin} />
-        <Route path="/pmtutorsadmin/jobs" exact component={Jobs} />
-        <Route path="/pmtutorsadmin/jobs/submitted" exact component={SubmittedJobs} />
-        <Route path="/pmtutorsadmin/jobs/submitted/:slug" component={JobSubmitted} />
-        <Route path="/pmtutorsadmin/vets" exact component={Vet} />
-        <Route path="/pmtutorsadmin/vets/submitted" exact component={SubmittedVets} />
-        <Route path="/pmtutorsadmin/vets/submitted/:slug" component={VetSubmitted} />
-        <Route path="/pmtutorsadmin/clients" component={Clients} />f
+        <AdminRoute path="/pmtutorsadmin" exact component={Admin} />
+        <AdminRoute path="/pmtutorsadmin/jobs" exact component={Jobs} />
+        <AdminRoute path="/pmtutorsadmin/jobs/submitted" exact component={SubmittedJobs} />
+        <AdminRoute path="/pmtutorsadmin/jobs/submitted/:slug" component={JobSubmitted} />
+        <AdminRoute path="/pmtutorsadmin/vets" exact component={Vet} />
+        <AdminRoute path="/pmtutorsadmin/vets/submitted" exact component={SubmittedVets} />
+        <AdminRoute path="/pmtutorsadmin/vets/submitted/:slug" component={VetSubmitted} />
+        <AdminRoute path="/pmtutorsadmin/clients" component={Clients} />
+        <Route path="/pmtutorsadmin/register" exact component={Register} />
+        <Route path="/pmtutorsadmin/register/complete" component={Complete} />
+        <Route path="/pmtutorsadmin/login" component={AdminLogin} />
       </Switch>
 
     </div>

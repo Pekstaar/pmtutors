@@ -225,19 +225,43 @@ const Quiz = (props) => {
             {/* Attachmets: */}
             <div style={{ margin: "0 5em" }}>
               <strong style={{ fontFamily: "Roboto Slab" }}>
-                data:
+                Job Attachments:
               </strong>
+
               <div style={{ display: "flex" }}>
-                <Paper
-                  style={{ width: "150px", height: "150px", margin: "0 .2em" }}
-                >
-                  <AiOutlineFileWord style={{ fontSize: "130px" }} />
-                </Paper>
-                <Paper
-                  style={{ width: "150px", height: "150px", margin: "0 .2em" }}
-                >
-                  <AiOutlineFileWord style={{ fontSize: "130px" }} />
-                </Paper>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr" }}>
+                  {
+                    values.attachments && values.attachments.map((doc, key) => {
+                      if ((doc.downloadURL) && doc.tag.includes("image")) {
+                        return (
+                          <div style={{ display: "inline-block", padding: "0 1em" }} key={key} >
+                            <a href={`${doc.downloadURL}`} style={{ cursor: "pointer" }}  >
+                              <Paper style={{ width: "160px", height: "120px", background: "#fff", display: "flex" }}>
+                                {/* <span style={{ fontSize: "40px", fontWeight: "bold", margin: "auto   " }} >.docx</span> */}
+                                <img src={`${doc.downloadURL}`} alt="uploaded doc" />
+                              </Paper>
+                              <span style={{ color: "blue", fontStyle: "italic" }}>{`${doc.downloadURL && doc.downloadURL.substring(16, 42)}. . .`}</span>
+                            </a>
+                          </div>
+                        )
+                      }
+                      // doc.downloadURL &&
+                      else if (doc.downloadURL && (doc.tag.includes("octet") || doc.tag.includes("word"))) {
+                        return (
+                          <div style={{ display: "inline-block", padding: "0 1em" }} key={key} >
+                            <a href={`${doc.downloadURL}`} style={{ cursor: "pointer" }}  >
+                              < Paper style={{ width: "160px", height: "130px", background: "#fff", display: "flex" }}>
+                                <AiOutlineFileWord style={{ margin: "auto", fontSize: "130px" }} />
+                              </ Paper>
+                              <span style={{ color: "blue", fontStyle: "italic" }}>{`${doc.downloadURL && doc.downloadURL.substring(16, 42)}. . .`}</span>
+                            </a>
+                          </div>
+                        )
+                      } return ("")
+
+                    })
+                  }
+                </div>
               </div>
             </div>
           </Grid>

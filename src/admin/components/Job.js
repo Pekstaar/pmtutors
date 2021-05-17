@@ -35,6 +35,7 @@ const Job = (props) => {
   const [open, setOpen] = useState(false);
   const [formMode, setFormMode] = useState(true);
   const [jobId, setJobId] = useState('')
+  // const [attachments, setAttachments] = useState({})
   // initial details = empty default
   const [state, setState] = useState({
     title: "",
@@ -74,6 +75,7 @@ const Job = (props) => {
       deadline: "",
       totalcost: "",
       category: "",
+      attachments: ""
     });
   };
 
@@ -104,6 +106,7 @@ const Job = (props) => {
   //get one job details
   const getOneJob = (id) => {
     setFormMode(false);
+    // console.log(state)
     setJobId(id);
     const currentJob = props && props.jobs.find(e => e.id === id)
     // console.log(response);
@@ -129,6 +132,8 @@ const Job = (props) => {
     } else {
       // then update job
       props.updateJob(jobId, state)
+
+
       // getAllJobs();
       setOpen(false);
       makeEmpty();
@@ -248,6 +253,9 @@ const Job = (props) => {
           jobDetails={state}
           handleChange={handleChange}
           addJob={addJobHandler}
+          setAttachments={setState}
+          state={state}
+          id={jobId}
         />
       </Container>
     </div>

@@ -32,7 +32,7 @@ const Carosel = ({ classes }) => {
       </Carousel>
 
       <div className={classes.cover}>
-        <h1>ONLINE TUTORING</h1>
+        <h1 class="h1">ONLINE TUTORING</h1>
 
         <h4>Online 24/7 tutoring from skilled tutors </h4>
 
