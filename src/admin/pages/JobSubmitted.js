@@ -2,19 +2,20 @@ import {
     Button,
     createMuiTheme,
     CssBaseline,
+    // Grid,
     Paper,
     ThemeProvider,
 } from "@material-ui/core";
-import { AccountBalanceWallet, Event, Label, SystemUpdateAlt } from "@material-ui/icons";
+import { AccountBalanceWallet, DoneAll, Event, Label, SystemUpdateAlt } from "@material-ui/icons";
 import React, { useEffect, useState } from "react";
-import Header from "../components/Header";
+// import Header from "../components/Header";
 import SideMenu from "../components/SideMenu";
 import useStyles from "../css/jobsubmitted.min.js"
 import fb from "../../config/fbConfig"
+import { NotificationManager } from "react-notifications"
 import moment from "moment";
 // import { AiOutlineFileWord } from "react-icons/ai";
-import { NotificationManager } from "react-notifications"
-import { connect, useSelector } from "react-redux";
+import { connect } from "react-redux";
 import { makePayment } from "../../store/actions/paymentActions";
 import PulseLoader from "react-spinners/RingLoader"
 
@@ -34,7 +35,7 @@ const JobSubmitted = (props) => {
     // const [loading, setLoading] = useState(false)
 
     const [state, setState] = useState({
-        title: "",
+        jobtitle: "",
         description: "",
         requirements: "",
         takenby: "",
@@ -44,7 +45,7 @@ const JobSubmitted = (props) => {
         attachments: [],
         submittedby: "",
     })
-    const [clientData, setClientData] = useState({})
+    const [payment, setPayment] = useState()
 
     const override = `
       display:flex;
@@ -55,11 +56,12 @@ const JobSubmitted = (props) => {
       `;
 
     const { slug } = props.match.params;
+    const firestore = fb.firestore()
 
     const approveJob = () => {
         // update my jobs as complete
 
-        const firestore = fb.firestore()
+        // console.log(state.jobtitle)
 
         // get mydata 
         firestore.collection("clients").where("username", "==", state.submittedby)
@@ -68,9 +70,9 @@ const JobSubmitted = (props) => {
                 querySnapshot.forEach((doc) => {
                     // doc.data() is never undefined for query doc snapshots
                     // initialize payments db and set up its data
-                    setClientData({ ...doc.data(), id: doc.id });
+                    // setClientData({ ...doc.data(), id: doc.id });
                     props.createPayment({
-                        title: state.title,
+                        title: state.jobtitle,
                         tutor: doc.data().username,
                         balance: (parseInt(state.totalcost))
                     }, slug)
@@ -81,7 +83,7 @@ const JobSubmitted = (props) => {
                             my_status: "complete",
                             status: "completed",
                         })
-                        .then(() => console.log("Job updated successfully"))
+                        .then(() => console.log("myjobs db job updated successfully to complete"))
                         .catch(e => {
                             console.error(e);
                             return;
@@ -91,10 +93,15 @@ const JobSubmitted = (props) => {
                     // my personal transactions set up
                     firestore.collection("clients").doc(doc.id).collection("mytransactions").doc(slug)
                         .set({
-                            title: state.title,
+                            title: state.jobtitle,
                             tutor: doc.data().username,
-                            balance: (parseInt(state.totalcost))
+                            balance: (parseInt(state.totalcost)),
+                            settledat: new Date()
                         })
+                        .then(() => console.log("data added to my-transactions successfully"))
+
+                    firestore.collection("submitted").doc(slug).update({ status: "verified" })
+                        .then(() => console.log("Submission db updated successfully."))
 
                     // update my total balance
                     firestore.collection("clients").doc(doc.id).update({ balance: (parseInt(state.totalcost) + parseInt(doc.data().balance)) })
@@ -108,7 +115,7 @@ const JobSubmitted = (props) => {
         fb.firestore().collection("jobs").doc(slug)
             .update({
                 status: "completed",
-                my_status: "complete"
+                // my_status: "complete"
             })
             .then(() => console.log("jobs - job updated successfully"))
             .catch(e => { throw e })
@@ -116,25 +123,59 @@ const JobSubmitted = (props) => {
 
     }
 
-    const getJob = () => {
-        // setLoading(true)
-
-        fb.firestore().collection("submitted").doc(slug).get()
-            .then(r => {
-                // setLoading(false)
-                setState({ ...r.data() });
+    const rejectJob = () => {
+        firestore.collection("clients").where("username", "==", state.submittedby)
+            .get()
+            .then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    firestore.collection("clients").doc(doc.id).collection("jobs").doc(slug)
+                        .update({
+                            my_status: "rejected",
+                            status: "waiting",
+                        })
+                        .then(() => console.log("myjobs db job updated successfully to rejection"))
+                        .catch(e => {
+                            console.error(e);
+                            return;
+                        })
+                })
             })
-            .catch(e => {
-                NotificationManager.error(e.message);
-                // setLoading(false)
-            })
 
+        fb.firestore().collection("jobs").doc(slug)
+            .update({
+                status: "rejected",
+                // my_status: "complete"
+            })
+            .then(() => console.log("jobs - job updated successfully"))
+            .catch(e => { throw e })
     }
 
     useEffect(() => {
+        // setLoading(true)
+        const getJob = async () => {
 
+            const jb = await fb.firestore().collection("submitted").doc(slug)
+            jb.onSnapshot(doc => {
+                setState({ ...doc.data(), id: jb.id });
+            })
+            // console.log(jb.id)
+            // .then(r => {
+            //     // setLoading(false)
+            // setLoading(false)
+
+        }
+
+        const getPayment = async () => {
+            const pay = await fb.firestore().collection("payments").doc(slug)
+            try {
+                pay.onSnapshot(doc => setPayment(doc.data()))
+            } catch (e) {
+                console.error(e)
+            }
+        }
+        // setLoading(false)
         getJob()
-
+        getPayment()
     })
 
     return (
@@ -142,7 +183,7 @@ const JobSubmitted = (props) => {
             <SideMenu />
 
             <div className={classes.adminMain}>
-                <Header />
+                {/* <Header />  */}
 
                 <div className={classes.container}>
                     <h3>Submitted Jobs</h3>
@@ -167,6 +208,7 @@ const JobSubmitted = (props) => {
                         <PulseLoader
                             css={override}
                             size={90}
+                            // loading={loading}
                             color={"royalblue"}
                         />
                         :
@@ -198,20 +240,47 @@ const JobSubmitted = (props) => {
                                                 </a>
                                             )
                                         }
+                                        return ""
                                     })}
                                 </div>
 
                             </div>
-                            <div style={{ display: "flex", justifyContent: "space-between", width: "80%", margin: "3em 0" }}>
-                                {/* buttons: approve job, decline job */}
-                                <Button variant="contained" color="primary" onClick={() => approveJob()}>
-                                    Approve Job
+                            {state.status && state.status === "verified" ?
+                                <div className="container" spacing={2}>
+                                    <div className="row d-flex justify-content-center">
+                                        <div className="col-7 d-flex my-3" style={{ backgroundColor: '#4BB543', margin: "auto", padding: ".5em 0", color: "#fff" }}>
+                                            <span className="m-auto">Job Approved!&nbsp;&nbsp;&nbsp;<DoneAll style={{ fontSize: "35px" }} /></span>
+                                        </div>
+                                        <div className="col-3 d-flex gap-2 justify-content-around align-items-center">
+                                            <Button disabled={payment && payment.status && payment.status === "settled"} onClick={() => settleBalance(slug, state)} variant="outlined" color="primary">
+                                                {payment && payment.status === "settled" ?
+                                                    <>
+                                                        Balance Settled:
+                                                        <span style={{ fontSize: "18px" }}> &nbsp;{`  ${state.totalcost}`}</span>
+                                                    </>
+                                                    :
+                                                    <>
+                                                        Settle Balance:
+                                                        <span style={{ fontSize: "18px" }}> &nbsp;{`  ${state.totalcost}`}</span>
+                                                    </>
+
+                                                }
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </div>
+                                :
+                                <div style={{ display: "flex", justifyContent: "space-between", width: "80%", margin: "3em 0" }}>
+                                    {/* buttons: approve job, decline job */}
+                                    <Button variant="contained" color="primary" onClick={() => approveJob()}>
+                                        Approve Job
                                 </Button>
 
-                                <Button variant="contained" color="secondary">
-                                    Reject Job
+                                    <Button onClick={() => rejectJob()} variant="contained" color="secondary">
+                                        Reject Job
                                 </Button>
-                            </div>
+                                </div>
+                            }
                         </div>
                     }
                 </div>
@@ -228,5 +297,35 @@ const mapDispatchToProps = (dispatch) => {
     }
 }
 
-
 export default connect(null, mapDispatchToProps)(JobSubmitted);
+
+export const settleBalance = async (slug, state, setPayment) => {
+    if (window.confirm(`Are You sure you want to Settle ${state.totalcost} Balance? `)) {
+        const clientDb = fb.firestore().collection("clients")
+        const payment = fb.firestore().collection("payments")
+        const data = await payment.doc(slug).get()
+        const clients = await clientDb.get()
+        // console.log(data.data().tutor)
+
+        let list = []
+        clients.forEach(e => list.push({ username: e.data().username, id: e.id }))
+        // setPayment(list)
+        const client = list.find(d => d.username === data.data().tutor)
+        // console.log(client)
+
+        // update payment db to settled
+        try {
+            await payment.doc(slug).update({ status: "settled" })
+            console.log("payment db update successful to settled!")
+
+            await clientDb.doc(client.id).collection("mytransactions").doc(slug).update({ status: "settled" })
+            console.log("mytransactionDB updated successfully")
+            NotificationManager.success("Balance settled Successfully!")
+        }
+        catch (e) {
+            console.error(e)
+        }
+        // console.log()
+
+    }
+}

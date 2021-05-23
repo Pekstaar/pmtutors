@@ -14,9 +14,9 @@ const PaymentReducer = (state = initState, action) => {
         case "PAYMENT_BUILD_ERROR":
 
             console.error("Payment Build error!", action.error)
+            return state;
 
         default:
-
             return state;
     }
 }

@@ -12,7 +12,6 @@ import {
   Paper,
   Select,
 } from "@material-ui/core";
-import { Keyboard } from "@material-ui/icons";
 import React, { useEffect, useState } from "react";
 import { AiOutlineFileWord } from "react-icons/ai";
 import { TextValidator, ValidatorForm } from "react-material-ui-form-validator";
@@ -40,8 +39,18 @@ const JobsDialog = (props) => {
 
   const [progress, setProgress] = useState(0)
   const [displayProgress, setDisplayProgress] = useState(false)
+  const [display, setDisplay] = useState("grid")
 
-  useEffect(() => console.log(props.state), [])
+  useEffect(() => {
+    const getAttachments = () => {
+      if (props.state.attachments && props.state.attachments.downloadURL) {
+        setDisplay("none")
+      } else {
+        setDisplay("grid")
+      }
+    }
+    getAttachments()
+  }, [])
 
 
   return (
@@ -257,21 +266,21 @@ const JobsDialog = (props) => {
                 }}
               >
                 <h4 style={{ fontFamily: "Varela Round", fontWeight: "lighter", fontStyle: "italic" }}>Attachments:</h4>
-                <div style={{ display: "flex" }}>
+                <div style={{ display: "flex", flexDirection: "column", minWidth: "400px" }}>
                   <div>
-                    <div
-                      style={{
-                        display: "grid",
-                        height: "200px",
-                        width: "500px",
-                        border: "1px dashed grey",
-                        placeItems: "center",
-                        marginBottom: "10px",
-                      }}
-                    >
-                      <Uploader values={props.state} setUploadProgress={setProgress} displayProg={setDisplayProgress} setData={props.setAttachments}
-                        id={props.id} />
-                    </div>
+                    {
+                      <div
+                        style={{
+                          display: "grid",
+                          placeItems: "center",
+                          marginBottom: "10px",
+
+                        }}
+                      >
+                        <Uploader values={props.state} setUploadProgress={setProgress} displayProg={setDisplayProgress} setData={props.setAttachments}
+                          id={props.id} />
+                      </div>
+                    }
                     {displayProgress ?
                       <div style={{
                         width: "50%",
@@ -285,7 +294,8 @@ const JobsDialog = (props) => {
                   </div>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr" }}>
                     {
-                      props.state.attachments && props.state.attachments.map((doc, key) => {
+                      props.atts && props.atts.map((doc, key) => {
+                        console.log(doc)
                         if ((doc.downloadURL) && doc.tag.includes("image")) {
                           return (
                             <div style={{ display: "inline-block", padding: "0 1em" }} key={key} >
@@ -298,7 +308,7 @@ const JobsDialog = (props) => {
                           )
                         }
                         // doc.downloadURL &&
-                        else if (doc.downloadURL && (doc.tag.includes("octet") || doc.tag.includes("word"))) {
+                        else if (doc.downloadURL && (doc.tag.includes("octet") || doc.tag.includes("word") || doc.tag.includes("pdf"))) {
                           return (
                             <div style={{ display: "inline-block", padding: "0 1em" }} key={key} >
                               < Paper style={{ width: "160px", height: "130px", background: "#fff", display: "flex" }}>

@@ -4,6 +4,7 @@ import { FaUserAlt } from "react-icons/fa";
 import { GoVerified } from "react-icons/go";
 import React from "react";
 import styles from "../css/sidemenu.min.js"
+import { Link } from "react-router-dom";
 
 const SideMenu = () => {
   const classes = styles();
@@ -16,16 +17,16 @@ const SideMenu = () => {
       </div>
 
       <ul className={classes.navitems}>
-        {sideList.map((val, key) => {
+        {sideList.map((val, k) => {
           return (
-            <li
-              key={key}
-              className={classes.row}
-              onClick={() => (window.location.pathname = val.path)}
-            >
-              <div id="icon">{val.icon}</div>
-              <div id="title">{val.title}</div>
-            </li>
+            <Link to={`${val.path}`} key={k}>
+              <li
+                className={classes.row}
+              >
+                <div id="icon">{val.icon}</div>
+                <div id="title">{val.title}</div>
+              </li>
+            </Link>
           );
         })}
       </ul>

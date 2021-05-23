@@ -27,7 +27,6 @@ const Vet = (props) => {
   // states
 
   const [quizValue, setQuizValue] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [btn, setBtn] = useState("Add");
   const [newMode, setNewMode] = useState(true);
   const [qId, setQId] = useState("");
@@ -135,7 +134,6 @@ const Vet = (props) => {
                         css={override}
                         size={150}
                         color={"royalblue"}
-                        loading={loading}
                       />
                     </TableCell>
                   </TableRow>

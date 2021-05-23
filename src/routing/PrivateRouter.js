@@ -25,7 +25,7 @@ const PrivateRoute = ({ component: RouteComponent, ...rest }) => {
     }
 
     getLevel()
-  }, [])
+  }, [firebase.auth.uid])
 
 
   return (

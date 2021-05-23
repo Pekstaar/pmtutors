@@ -36,21 +36,21 @@ const Home = () => {
                             <li className="nav-item">
                                 <a className="nav-link" href="#t">
                                     Student
-            </a>
+                                </a>
                             </li>
-                            <li className="nav-item"><a className="nav-link" href="#">
+                            <li className="nav-item"><a className="nav-link" href="#home">
                                 Tutor
-            </a></li>
+                            </a></li>
 
-                            <li className="nav-item"><a className="nav-link" href="#">
+                            <li className="nav-item"><Link className="nav-link" to="/">
                                 Home
-            </a></li>
+                            </Link></li>
                             <li className="nav-item"> <a className="nav-link" href="#about">
                                 About
-            </a></li>
+                            </a></li>
                             <li className="nav-item"><a className="nav-link" href="#contact">
                                 Contacts
-            </a></li>
+                            </a></li>
 
                             {/* <!-- <li className="nav-item mx-4 "> --> */}
                             <div className="d-flex justify-content-between gap-3">
@@ -119,13 +119,16 @@ const Home = () => {
                     <h5 className="h5">Online 24/7 tutoring from skilled tutors </h5>
 
                     <div>
-                        <button className="btn btn-primary btn-md-lg mx-3">
-                            I am a Tutor
+                        <Link to="/login">
+                            <button className="btn btn-primary btn-md-lg mx-3">
+                                I am a Tutor
                          </button>
-
-                        <button className="btn btn-danger btn-lg-md">
-                            I am a Student
-                        </button>
+                        </Link>
+                        <Link to="/">
+                            <button className="btn btn-danger btn-lg-md">
+                                I am a Student
+                            </button>
+                        </Link>
                     </div>
 
                     <div className="w-75" style={{ height: "20%", overflow: "hidden" }}>
@@ -193,30 +196,30 @@ const Home = () => {
                     {/* <div className="col-lg-8 col-md-10 align-self-center d-flex align-items-between">
                         <div className="container-fluid my-5">
                             <div className="row py-2"> */}
-                    <div className="col-md-2  d-flex flex-column align-items-center ">
+                    <div className="col-md-2 mt-3 col-5 d-flex flex-column align-items-center ">
                         <div>
-                            <BsPersonPlus style={{ fontSize: "80px" }} />
+                            <BsPersonPlus style={{ fontSize: "60px" }} />
                         </div>
                         {/* step section */}
                         <span>1.Register to Join</span>
                     </div>
-                    <div className="col-md-2 d-flex  flex-column align-items-center">
+                    <div className="col-md-2 col-5 mt-3 d-flex  flex-column align-items-center">
                         <div >
-                            <HiOutlineClipboardCopy style={{ fontSize: "80px" }} />
+                            <HiOutlineClipboardCopy style={{ fontSize: "60px" }} />
                         </div>
                         {/* step section */}
                         <span>2.Take Test</span>
                     </div>
-                    <div className="col-md-2 d-flex  flex-column align-items-center">
+                    <div className="col-md-2 col-5 mt-3 d-flex  flex-column align-items-center">
                         <div >
-                            <GrDocumentConfig style={{ fontSize: "80px" }} />
+                            <GrDocumentConfig style={{ fontSize: "60px" }} />
                         </div>
                         {/* step section */}
                         <span>3.Set up Profile</span>
                     </div>
-                    <div className="col-md-2 d-flex  flex-column align-items-center">
+                    <div className="col-md-2 mt-3 col-5 d-flex  flex-column align-items-center">
                         <div >
-                            <GiBookmarklet style={{ fontSize: "80px" }} />
+                            <GiBookmarklet style={{ fontSize: "60px" }} />
                         </div>
                         {/* step section */}
                         <span>4.Take Task</span>
@@ -302,7 +305,7 @@ const Home = () => {
                     <div className="col-md-5 d-flex justify-content-md-end justify-content-center h-100">
                         <img
                             src="https://www.kindpng.com/picc/m/49-497739_computer-clipart-team-development-team-png-transparent-png.png"
-                            alt="about-image"
+                            alt="about"
                         />
                     </div>
                     <div className="about-description col-md-3 col-xs-9 slab px-2">
@@ -340,7 +343,7 @@ const Home = () => {
             {/* footer */}
             <section className="footer container-fluid p-4">
                 <div className="row">
-                    <div id="contact" className="col-md-5 d-flex flex-column align-items-center gap-3 text-white">
+                    <div id="contact" className="col-md-5 d-flex flex-column align-items-center gap-3 text-white p-0">
                         <h5
                             style={{
                                 fontFamily: "Roboto Slab",
@@ -357,17 +360,17 @@ const Home = () => {
                         <span>+254 729 138466</span>
                         <strong style={{ color: "#fdfdfd" }}>pmtutorshub@gmail.com</strong>
                     </div>
-                    <div className="col-md-5 slab d-flex flex-column align-items-center ">
-                        <ul className="footer-nav d-flex flex-column gap-2 text-uppercase">
-                            <a href="#">Home</a>
+                    <div className="col-md-5 slab d-flex flex-column align-items-center p-0">
+                        <ul className="footer-nav d-flex flex-column gap-2 text-uppercase p-0">
+                            <Link to="/">Home</Link>
                             <a href="#about">About</a>
                             <a href="#contact">Contact-Us</a>
-                            <a href="/login">Login</a>
-                            <a href="/signup">Sign Up</a>
+                            <Link to="/login">Login</Link>
+                            <Link to="/signup">Sign Up</Link>
                         </ul>
                     </div>
                 </div>
-                <div className="w-75 d-md-flex  d-sm-inline-block align-items-center justify-content-between " style={{ margin: "auto" }}>
+                <div className="w-75 d-md-flex d-sm-inline-block align-items-center justify-content-between " style={{ margin: "auto" }}>
                     <span
                         style={{
                             fontSize: "15px",

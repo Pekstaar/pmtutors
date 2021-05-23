@@ -1,21 +1,13 @@
 import {
-  Button,
   Container,
   Grid,
   IconButton,
   Paper,
-  Table,
-  TableBody,
-  TableCell,
   TableContainer,
-  TableHead,
-  TableRow,
-  Typography,
 } from "@material-ui/core";
-import { AddCircle, Delete, Edit, Work } from "@material-ui/icons";
+import { AddCircle, Work } from "@material-ui/icons";
 import React, { useState } from "react";
 import PageHeader from "./PageHeader";
-import ScaleLoader from "react-spinners/ScaleLoader";
 //   import { addJob, jobDelete, getJob, getJobs, updateJob } from "../data/JobData";
 import JobsDialog from "./JobsDialog";
 import useStyles from "../css/job.min.js"
@@ -23,7 +15,9 @@ import { createJob, removeJob, updateJob } from "../../store/actions/jobAction"
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { firestoreConnect } from "react-redux-firebase";
-import moment from "moment";
+import NavTabs from "./switchTab";
+import fb from "../../config/fbConfig"
+import { NotificationManager } from "react-notifications";
 
 
 
@@ -49,15 +43,6 @@ const Job = (props) => {
     pagecost: "",
     category: "",
   });
-
-
-  // loader css override
-  const override = `
-      display:flex;
-      align-items:center;
-      justify-content: center;
-      border-color:red;
-      `;
 
 
   // internal Functions
@@ -125,7 +110,7 @@ const Job = (props) => {
     e.preventDefault();
 
     if (formMode) {
-      props.createJob(state)
+      CreateJob(state)
 
       setOpen(false);
       makeEmpty();
@@ -146,103 +131,30 @@ const Job = (props) => {
         title="Manage Jobs"
         subtitle="Create update, manage Jobs available and approve submitted Jobs."
         icon={<Work />}
-        displayButtons={true}
+        // displayButtons={true}
+        createJob={createJob}
       />
 
-      <Container className={classes.root}>
+      <Container style={{ position: 'relative' }} className={classes.root}>
         <TableContainer component={Paper}>
-          <Grid container>
-            <Grid item xs={8}>
-              <Typography
-                className={classes.title}
-                variant="h6"
-                component="div"
-              >
-                All Jobs
-                </Typography>
-            </Grid>
-            <Grid item xs={4}>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleAdd}
-                // classes={classes.button}
-                startIcon={<AddCircle />}
-                style={{ margin: "10px 8px", float: "right" }}
-              >
-                Add
-                </Button>
+          <Grid container >
+
+            <IconButton
+              onClick={handleAdd}
+              color="primary"
+              aria-label="View Job"
+              style={{ float: "right", position: "absolute", right: "0", top: "-3.3em" }}
+            >
+              <span style={{ fontSize: "16px", fontFamily: "Roboto Slab" }}></span>
+              <AddCircle style={{ fontSize: "45px" }} />
+            </IconButton>
+            <Grid item xs={12}>
+              <NavTabs getOneJob={getOneJob} prop={props} page="jobs" />
             </Grid>
           </Grid>
 
-          <Table className={classes.table}>
-            <TableHead>
-              <TableRow>
-                <TableCell className={classes.head}>Title</TableCell>
-                <TableCell className={classes.head}>Cost(kshs)</TableCell>
-                <TableCell className={classes.head}>Category</TableCell>
-                <TableCell className={classes.head}>Posted By</TableCell>
-                <TableCell className={classes.head}>Status</TableCell>
-                <TableCell className={classes.head}>Taken By</TableCell>
-
-                {/* <TableCell className={classes.head}>Timestamp</TableCell> */}
-                <TableCell className={classes.head}>created</TableCell>
-                <TableCell className={classes.head}>Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {!props.jobs ? (
-                <TableRow>
-                  <TableCell colSpan={7}>
-                    <ScaleLoader
-                      css={override}
-                      size={150}
-                      color={"royalblue"}
-                    />
-                  </TableCell>
-                </TableRow>
-              ) : (
-                <>
-                  {props.jobs &&
-                    props.jobs.map((j, key) => (
-                      <TableRow key={key}>
-                        <TableCell>
-                          {j.title.length > 22
-                            ? `${j.title.substring(0, 19)} . . .`
-                            : j.title}
-                        </TableCell>
-                        <TableCell>{j.totalcost} kshs</TableCell>
-                        <TableCell>{j.category}</TableCell>
-                        <TableCell>{j.createdby}</TableCell>
-                        <TableCell>{j.status}</TableCell>
-                        <TableCell>{j.takenby}</TableCell>
-                        {/* <TableCell>
-                            {ManageJTime(j.timestamp, "date")}
-                          </TableCell> */}
-                        <TableCell>{moment(j.createdat.toDate()).calendar()}</TableCell>
-                        <TableCell>
-                          <IconButton
-                            onClick={() => getOneJob(j.id)}
-                            color="primary"
-                            aria-label="Update Customer"
-                          >
-                            <Edit />
-                          </IconButton>
-
-                          <IconButton
-                            onClick={() => props.removeJob(j.id)}
-                            color="secondary"
-                            aria-label="Update Customer"
-                          >
-                            <Delete />
-                          </IconButton>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                </>
-              )}
-            </TableBody>
-          </Table>
+          {/*  */}
+          {/* <Submitted /> */}
         </TableContainer>
 
         <JobsDialog
@@ -254,6 +166,7 @@ const Job = (props) => {
           handleChange={handleChange}
           addJob={addJobHandler}
           setAttachments={setState}
+          atts={state.attachments}
           state={state}
           id={jobId}
         />
@@ -286,3 +199,12 @@ export default compose(
     }
   ])
 )(Job);
+
+
+export const CreateJob = async (data) => {
+  const res = await fb.firestore().collection("jobs").add({ ...data, createdat: new Date() })
+
+  if (res.id) {
+    console.log("Job Created", res.id)
+  }
+}

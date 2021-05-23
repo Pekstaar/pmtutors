@@ -28,12 +28,13 @@ import { Register } from "./admin/auth/AdminSignUp";
 import Complete from "./admin/auth/Complete";
 import AdminRoute from "./routing/AdminRouter";
 import AdminLogin from "./admin/auth/Login";
+import Account from "./pages/Account";
 
 const App = (props) => {
 
   useEffect(() => {
     window.addEventListener('unload', () => props.endSession())
-  }, [])
+  }, [props])
 
   return (
     <div className="App">
@@ -49,6 +50,7 @@ const App = (props) => {
         {/* <Route path="/index" component={index} /> */}
         <PrivateRoute path="/profile" component={Profile} />
         <PrivateRoute path="/dashboard" component={Dashboard} />
+        <PrivateRoute path="/account" component={Account} />
         <Route path="/vetting" component={Vetting} />
         <PrivateRoute path="/quiz/:slug" component={Quiz} />
         <AdminRoute path="/pmtutorsadmin" exact component={Admin} />

@@ -91,7 +91,7 @@ const Vetting = (props) => {
             // }
         }
         getTasks();
-    }, []);
+    }, [auth.uid]);
 
     return (
         auth && !auth.uid ? <Redirect to="/login" /> : <>

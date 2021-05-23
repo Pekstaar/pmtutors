@@ -6,6 +6,7 @@ import useStyles from "../styling/dashboard.min.js"
 import fb from "../config/fbConfig"
 import { useState, useEffect } from "react"
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 
 // import { Link } from "react-router-dom";
 
@@ -123,9 +124,11 @@ const Dashboard = (props) => {
                 <br /> to access tasks <br />{" "}
                 <strong> Access questions here!</strong>
               </p>
-              <Button variant="outlined" color="primary">
-                <small onClick={() => window.location.pathname = "/quiz"}> quiz bank</small>
-              </Button>
+              <Link to="/quiz">
+                <Button variant="outlined" color="primary">
+                  <small > quiz bank</small>
+                </Button>
+              </Link>
             </Paper>
             <Paper className={classes.card}>
               <h6 style={{ color: "#ca3131" }}>Account</h6>
@@ -135,16 +138,13 @@ const Dashboard = (props) => {
                 <br /> to access Your account <br />{" "}
                 <strong>
                   {" "}
-                  Current Balance:
-                  <span style={{ color: "green", cursor: "pointer" }}>
-                    {" "}
-                    $10.00
-                  </span>
                 </strong>
               </p>
-              <Button variant="outlined" color="secondary">
-                <small>My Account</small>
-              </Button>
+              <Link to="/account">
+                <Button variant="outlined" color="secondary">
+                  <small>My Account</small>
+                </Button>
+              </Link>
             </Paper>
           </Grid>
           {/* task history */}

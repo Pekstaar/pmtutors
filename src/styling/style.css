@@ -152,11 +152,6 @@ a {
   font-size: 28px;
 }
 
-.our-offers-inner .our-offer-exp :nth-child(1) {
-  -webkit-transform: rotate(-1deg);
-          transform: rotate(-1deg);
-}
-
 .our-offers-inner .our-offer-exp :nth-child(2) {
   margin-top: 8px;
   font-size: 23px;

@@ -4,9 +4,8 @@ import {
     CssBaseline,
     Paper,
     ThemeProvider,
-    withStyles,
 } from "@material-ui/core";
-import { Event, Label, SystemUpdateAlt } from "@material-ui/icons";
+import { Event, SystemUpdateAlt } from "@material-ui/icons";
 import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import SideMenu from "../components/SideMenu";
@@ -26,7 +25,7 @@ const theme = createMuiTheme({
 const VetSubmitted = (props) => {
     const classes = useStyles()
 
-    const [loading, setLoading] = useState(false)
+    // const [loading, setLoading] = useState(false)
 
     const [state, setState] = useState({
         title: "",
@@ -59,11 +58,9 @@ const VetSubmitted = (props) => {
 
     useEffect(() => {
         const getJob = () => {
-            setLoading(true)
 
             fb.firestore().collection("submitted_vets").doc(slug).get()
                 .then(r => setState({ ...r.data() }))
-                .then(() => setLoading(false))
                 .catch(e => NotificationManager.error(e.message))
         }
         getJob()

@@ -18,6 +18,8 @@ import LinearProgressWithLabel from "../components/progress"
 import { compose } from "redux";
 import { firestoreConnect } from "react-redux-firebase";
 import DoneAll from '@material-ui/icons/DoneAll';
+import ScaleLoader from "react-spinners/ScaleLoader"
+
 // import { getClient } from "./admin/data/ClientData";
 
 const Quiz = (props) => {
@@ -32,6 +34,7 @@ const Quiz = (props) => {
   const [uploadDisplay, setUploadDisplay] = useState(false);
   const [displayProgress, setDisplayProgress] = useState(false)
   const [uploadProgress, setUploadProgress] = useState(() => 0)
+  const [loading, setLoading] = useState(false)
   const [data, setdata] = useState({
     attachments: [],
   })
@@ -63,23 +66,20 @@ const Quiz = (props) => {
   } = values;
 
   // get details to update - getone
-  const getDetails = () => {
-    fb.firestore().collection("jobs").doc(slug).get()
-      .then(doc => {
+  const getDetails = async () => {
+    setLoading(true)
+    const data = await fb.firestore().collection("jobs").doc(slug).get()
+    // console.log(data.id)
+    if (data.data() && data.data().status && (data.data().status === "taken" || data.data().status === "rejected")) {
+      // setValues({ ...data.data(), id: data.id })
+      // setLoading(false)
+      setUploadDisplay(true)
+      // return
 
-        // console.log(values);
-        setValues({
-          ...doc.data()
-        });
+    }
+    setLoading(false)
+    setValues({ ...data.data(), id: data.id })
 
-        if (doc.data().status === "taken") {
-          setUploadDisplay(true)
-          return
-
-        }
-
-      })
-      .catch(e => NotificationManager.error(e.message))
   };
 
   //   Take task function:    
@@ -122,18 +122,32 @@ const Quiz = (props) => {
 
   const jobSubmission = async () => {
     const client = props.clients.find(e => e.id === props.user.uid)
-    const conn = fb.firestore().collection("clients").doc(props.user.uid).collection("jobs")
-    const data = await conn.doc(slug).get()
+    // const conn = fb.firestore().collection("clients").doc(props.user.uid).collection("jobs")
+    // // const data = await conn.doc(slug).get()
     // console.log(data.data())
     // console.log(client.username)
     fb.firestore().collection("jobs").doc(slug).update({ status: "submitted" })
-
+    const submissionData = {
+      attachments: data.attachments,
+      jobtitle: values.title,
+      description: values.description,
+      category: values.category,
+      createdby: values.createdby,
+      totalcost: values.totalcost,
+      pagecost: values.pagecost,
+    }
     try {
-      props.submitJob(slug, data.data(), client);
+      props.submitJob(slug, submissionData, client);
       getDetails();
     } catch (e) { throw e }
 
   }
+  const override = `
+      display:flex;
+      align-items:center;
+      justify-content: center;props
+      border-color:red;
+      `;
 
 
   useEffect(() => {
@@ -145,198 +159,279 @@ const Quiz = (props) => {
     <>
       <Navbar position="" />
       <Grid container className={classes.container}>
-        <Grid container item md={8} className={classes.root}>
-          {/* details */}
 
-          <Grid
-            item
-            md={12}
-            style={{
-              height: "100px",
-              padding: "0 2em",
-              marginBottom: "1em",
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
-            <div className={classes.row}>
-              <span>Take Question</span>
-              <span>Analyse & research</span>
-              <span>Submit question</span>
-            </div>
-            <small style={{ fontFamily: "Roboto Slab", textAlign: "center" }}>
-              Expectation: 0% plagiarism, 0% grammer error
+        <Grid container item md={8} style={{ minHeight: "70vh" }} className={classes.root}>
+          {
+            loading === true ?
+              <div style={{ width: "100%", height: "100%", display: "grid", placeItems: "center" }}>
+                <ScaleLoader
+                  css={override}
+                  size={150}
+                  color={"royalblue"}
+                  // loading={loading}
+                  height={60}
+                  width={6}
+                />
+              </div>
+              :
+              <>
+                {/* details */}
+
+                <Grid
+                  item
+                  md={12}
+                  style={{
+                    height: "100px",
+                    padding: "0 2em",
+                    marginBottom: "1em",
+                    display: "flex",
+                    flexDirection: "column",
+                  }}
+                >
+                  <div className={classes.row}>
+                    <span>Take Question</span>
+                    <span>Analyse & research</span>
+                    <span>Submit question</span>
+                  </div>
+                  <small style={{ fontFamily: "Roboto Slab", textAlign: "center" }}>
+                    Expectation: 0% plagiarism, 0% grammer error
               <hr />
-            </small>
-          </Grid>
+                  </small>
+                </Grid>
 
-          {/* requirements */}
-          <Grid item md={10} className={classes.reqs}>
-            <h5>Requirements:</h5>
-            <div>
-              <small>Formatting:</small> {"   "}{requirements}
-            </div>
-          </Grid>
-          {/* Title */}
-          <h4>{title}</h4>
+                {/* requirements */}
+                <Grid item md={11} className={classes.reqs}>
+                  <h5>Requirements:</h5>
+                  <div>
+                    <small>Formatting:</small> {"   "}{requirements}
+                  </div>
+                </Grid><br />
+                {/* Title */}
+                <h4>{title}</h4>
 
-          {/* subbar */}
-          <Grid className={classes.subbar} item md={12}>
-            <div>
-              <Label />
-              {category}
-            </div>
-            <div>
-              <AccountBalanceWallet />
+                {/* subbar */}
+                <Grid className={classes.subbar} item md={12}>
+                  <div>
+                    <Label />
+                    {category}
+                  </div>
+                  <div>
+                    <AccountBalanceWallet />
               ${parseInt(totalcost / 100)}
-            </div>
-            <div>
-              <Alarm />
-              {deadline}
-            </div>
-            <div>
-              <Event />
-              {moment(createdat && createdat.seconds && createdat.seconds * 1000).format('l')}
-            </div>
+                  </div>
+                  <div>
+                    <Alarm />
+                    {deadline}
+                  </div>
+                  <div>
+                    <Event />
+                    {moment(createdat && createdat.seconds && createdat.seconds * 1000).format('l')}
+                  </div>
 
-            <Button variant="contained" color="primary">
-              Add Favourite
+                  <Button variant="contained" color="primary">
+                    Add Favourite
             </Button>
-          </Grid>
+                </Grid>
 
-          {/* Job section */}
-          <Grid item md={12} className={classes.info}>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                fontFamily: "Roboto Slab",
-              }}
-            >
-              <Avatar
-                style={{ height: "50px", width: "50px", marginRight: "1.5em" }}
-              >{title && title.charAt(0)}</Avatar>
-              {createdby}
-            </div>
-            <p style={{ overflowX: "hidden" }}>
-              {description}
-            </p>
+                {/* Job section */}
+                <Grid item md={12} className={classes.info}>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      fontFamily: "Roboto Slab",
+                    }}
+                  >
+                    <Avatar
+                      style={{ height: "50px", width: "50px", marginRight: "1.5em" }}
+                    >{title && title.charAt(0)}</Avatar>
+                    {createdby}
+                  </div>
+                  <p style={{ overflowX: "hidden" }}>
+                    {description}
+                  </p>
 
-            {/* Attachmets: */}
-            <div style={{ margin: "0 5em" }}>
-              <strong style={{ fontFamily: "Roboto Slab" }}>
-                Job Attachments:
+                  {/* Attachmets: */}
+                  <div style={{ margin: "0 5em" }}>
+                    <strong style={{ fontFamily: "Roboto Slab" }}>
+                      Job Attachments:
               </strong>
 
-              <div style={{ display: "flex" }}>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr" }}>
-                  {
-                    values.attachments && values.attachments.map((doc, key) => {
-                      if ((doc.downloadURL) && doc.tag.includes("image")) {
-                        return (
-                          <div style={{ display: "inline-block", padding: "0 1em" }} key={key} >
-                            <a href={`${doc.downloadURL}`} style={{ cursor: "pointer" }}  >
-                              <Paper style={{ width: "160px", height: "120px", background: "#fff", display: "flex" }}>
-                                {/* <span style={{ fontSize: "40px", fontWeight: "bold", margin: "auto   " }} >.docx</span> */}
-                                <img src={`${doc.downloadURL}`} alt="uploaded doc" />
-                              </Paper>
-                              <span style={{ color: "blue", fontStyle: "italic" }}>{`${doc.downloadURL && doc.downloadURL.substring(16, 42)}. . .`}</span>
-                            </a>
-                          </div>
-                        )
-                      }
-                      // doc.downloadURL &&
-                      else if (doc.downloadURL && (doc.tag.includes("octet") || doc.tag.includes("word"))) {
-                        return (
-                          <div style={{ display: "inline-block", padding: "0 1em" }} key={key} >
-                            <a href={`${doc.downloadURL}`} style={{ cursor: "pointer" }}  >
-                              < Paper style={{ width: "160px", height: "130px", background: "#fff", display: "flex" }}>
-                                <AiOutlineFileWord style={{ margin: "auto", fontSize: "130px" }} />
-                              </ Paper>
-                              <span style={{ color: "blue", fontStyle: "italic" }}>{`${doc.downloadURL && doc.downloadURL.substring(16, 42)}. . .`}</span>
-                            </a>
-                          </div>
-                        )
-                      } return ("")
+                    <div style={{ display: "flex" }}>
+                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr" }}>
+                        {
+                          values.attachments && values.attachments.map((doc, key) => {
+                            if ((doc.downloadURL) && doc.tag.includes("image")) {
+                              return (
+                                <div style={{ display: "inline-block", padding: "0 1em" }} key={key} >
+                                  <a href={`${doc.downloadURL}`} style={{ cursor: "pointer" }}  >
+                                    <Paper style={{ width: "160px", height: "120px", background: "#fff", display: "flex" }}>
+                                      {/* <span style={{ fontSize: "40px", fontWeight: "bold", margin: "auto   " }} >.docx</span> */}
+                                      <img src={`${doc.downloadURL}`} alt="uploaded doc" />
+                                    </Paper>
+                                    <span style={{ color: "blue", fontStyle: "italic" }}>{`${doc.downloadURL && doc.downloadURL.substring(16, 42)}. . .`}</span>
+                                  </a>
+                                </div>
+                              )
+                            }
+                            // doc.downloadURL &&
+                            else if (doc.downloadURL && (doc.tag.includes("octet") || doc.tag.includes("word"))) {
+                              return (
+                                <div style={{ display: "inline-block", padding: "0 1em" }} key={key} >
+                                  <a href={`${doc.downloadURL}`} style={{ cursor: "pointer" }}  >
+                                    < Paper style={{ width: "160px", height: "130px", background: "#fff", display: "flex" }}>
+                                      <AiOutlineFileWord style={{ margin: "auto", fontSize: "130px" }} />
+                                    </ Paper>
+                                    <span style={{ color: "blue", fontStyle: "italic" }}>{`${doc.downloadURL && doc.downloadURL.substring(16, 42)}. . .`}</span>
+                                  </a>
+                                </div>
+                              )
+                            } return ("")
 
-                    })
-                  }
-                </div>
-              </div>
-            </div>
-          </Grid>
-
-          {/* Footer */}
-          <Grid item md={12} className={classes.footer}>
-            {
-              values.status && values.status === "submitted" ?
-                <div style={{ backgroundColor: '#4BB543', width: "60%", margin: "auto", padding: ".5em 0", color: "#fff" }}>
-                  <span >Job Submitted Successfully!</span>&nbsp;&nbsp;&nbsp;<DoneAll style={{ fontSize: "35px" }} />
-                </div>
-                :
-                uploadDisplay ? (
-                  <div>
-                    <p>
-                      Please Ensure your meet all requirements and expectations for
-                      error may lead to penalty
-                    </p>
-                    <div
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        margin: "0 auto",
-                      }}
-                    >
-                      <div
-                        style={{
-                          display: "grid",
-                          height: "200px",
-                          width: "500px",
-                          border: "1px dashed grey",
-                          placeItems: "center",
-                          marginBottom: "10px",
-                        }}
-                      >
-                        <Upload id={slug} updatedata={updatedata} setdata={setdata} displayProg={setDisplayProgress} setUploadProgress={setUploadProgress}>
-                          Select Task to Upload
-                  </Upload>
+                          })
+                        }
                       </div>
-                    </div>
-                    {/* progress display */}
-                    {displayProgress ?
-                      <div className={classes.progress}>
-                        <LinearProgressWithLabel value={uploadProgress} />
-                      </div>
-                      :
-                      ""
-                    }
-
-                    <div>
-                      <Button onClick={jobSubmission} variant="contained" style={{ backgroundColor: "#4BB543", color: "#fff", padding: "8px 2em" }}>Submit JOB</Button>
                     </div>
                   </div>
-                ) : (
-                  title !== "" ?
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      style={{ height: "50px", width: "200px", margin: "0 auto" }}
-                      onClick={takeTask}
-                    >
-                      Take Task
-              </Button>
-                    :
-                    <Button
-                      variant="contained"
-                      disabled
-                      style={{ height: "50px", width: "200px", margin: "0 auto" }}
-                      onClick={takeTask}
-                    >
-                      Take Task
-              </Button>
-                )}
-          </Grid>
+                </Grid>
+
+                {/* Footer */}
+                <Grid item md={12} className={classes.footer}>
+                  {
+
+                    values.status && (values.status === "completed" || values.status === "complete") ?
+                      <div style={{ backgroundColor: '#4BB543', width: "60%", margin: "auto", padding: ".5em 0", color: "#fff" }}>
+                        <span >Job complete!</span>&nbsp;&nbsp;&nbsp;
+                    </div>
+                      :
+                      <>
+                        {
+                          values.status && values.status === "submitted" ?
+                            <div style={{ backgroundColor: '#4BB543', width: "60%", margin: "auto", padding: ".5em 0", color: "#fff" }}>
+                              <span >Job Submitted Successfully!</span>&nbsp;&nbsp;&nbsp;<DoneAll style={{ fontSize: "35px" }} />
+                            </div>
+                            :
+                            uploadDisplay && (values.status && values.status === "rejected") ? (
+                              <>
+                                <div style={{ backgroundColor: '#c13441', width: "60%", margin: "auto", padding: ".5em 0", color: "#fff" }}>
+                                  <span >Job Rejected! Contact admin for more information</span>&nbsp;&nbsp;&nbsp;
+                                </div>
+                                <br />
+                                <div>
+                                  <p>
+                                    Please Ensure your meet all requirements and expectations for
+                                    error may lead to penalty
+                                  </p>
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      flexDirection: "column",
+                                      alignItems: "center",
+                                      margin: "0 auto",
+                                    }}
+                                  >
+                                    status
+                                  <div
+                                      style={{
+                                        display: "grid",
+                                        height: "200px",
+                                        width: "500px",
+                                        border: "1px dashed grey",
+                                        placeItems: "center",
+                                        marginBottom: "10px",
+                                      }}
+                                    >
+                                      <Upload id={slug} updatedata={updatedata} setdata={setdata} displayProg={setDisplayProgress} setUploadProgress={setUploadProgress}>
+                                        Select Task to Upload
+                                  </Upload>
+                                    </div>
+                                  </div>
+                                  {/* progress display */}
+                                  {displayProgress ?
+                                    <div className={classes.progress}>
+                                      <LinearProgressWithLabel value={uploadProgress} />
+                                    </div>
+                                    :
+                                    ""
+
+                                  }
+
+                                  <div>
+                                    <Button onClick={jobSubmission} variant="contained" style={{ backgroundColor: "#4BB543", color: "#fff", padding: "8px 2em" }}>Submit JOB</Button>
+                                  </div>
+                                </div>
+                              </>)
+                              :
+                              uploadDisplay ? (
+
+                                <div>
+                                  <p>
+                                    Please Ensure your meet all requirements and expectations for
+                                    error may lead to penalty
+                                  </p>
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      flexDirection: "column",
+                                      alignItems: "center",
+                                      margin: "0 auto",
+                                    }}
+                                  >
+                                    status
+                              <div
+                                      style={{
+                                        display: "grid",
+                                        height: "200px",
+                                        width: "500px",
+                                        border: "1px dashed grey",
+                                        placeItems: "center",
+                                        marginBottom: "10px",
+                                      }}
+                                    >
+                                      <Upload id={slug} updatedata={updatedata} setdata={setdata} displayProg={setDisplayProgress} setUploadProgress={setUploadProgress}>
+                                        Select Task to Upload
+                              </Upload>
+                                    </div>
+                                  </div>
+                                  {/* progress display */}
+                                  {displayProgress ?
+                                    <div className={classes.progress}>
+                                      <LinearProgressWithLabel value={uploadProgress} />
+                                    </div>
+                                    :
+                                    ""
+
+                                  }
+
+                                  <div>
+                                    <Button onClick={jobSubmission} variant="contained" style={{ backgroundColor: "#4BB543", color: "#fff", padding: "8px 2em" }}>Submit JOB</Button>
+                                  </div>
+                                </div>
+                              ) : (
+                                title !== "" ?
+                                  <Button
+                                    variant="contained"
+                                    color="primary"
+                                    style={{ height: "50px", width: "200px", margin: "0 auto" }}
+                                    onClick={takeTask}
+                                  >
+                                    Take Task
+                                  </Button>
+                                  :
+                                  <Button
+                                    variant="contained"
+                                    disabled
+                                    style={{ height: "50px", width: "200px", margin: "0 auto" }}
+                                    onClick={takeTask}
+                                  >
+                                    Take Task
+                          </Button>
+                              )}
+                      </>
+                  }
+                </Grid>
+              </>
+          }
         </Grid>
       </Grid>
     </>

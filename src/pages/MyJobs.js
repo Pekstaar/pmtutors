@@ -9,6 +9,7 @@ import image from "../images/empty.png"
 import moment from "moment";
 import { firestoreConnect } from "react-redux-firebase";
 import { compose } from "redux";
+import { Link } from "react-router-dom";
 
 // import { Link } from "react-router-dom";
 
@@ -20,13 +21,25 @@ const MyJobs = (props) => {
 
   const [state, setState] = useState([])
 
+  const handleClassName = (name) => {
+    if (name === "completed" || name === "complete") {
+      return "alert alert-success"
+    } else if (name === "pending") {
+      return "alert alert-warning"
+    } else if (name === "rejected") {
+      return "alert alert-danger"
+    } else {
+      return "alert alert-info"
+    }
+  }
+
   // context
   const getJobs = async () => {
     const events = await fb.firestore().collection('clients').doc(props.user.uid).collection("jobs")
 
     events.get().then((querySnapshot) => {
       const tempDoc = querySnapshot.docs.map((doc) => {
-        return { ...doc.data() }
+        return { ...doc.data(), id: doc.id }
       })
       setState(tempDoc)
     })
@@ -64,23 +77,22 @@ const MyJobs = (props) => {
               </label>
 
               {state.length !== 0 ? state.map((j, key) =>
+                <Link key={key} to={`/quiz/${j.id}`}>
+                  <div className={`${handleClassName(j.my_status)}`} style={{ minWidth: "720px" }}>
+                    <h6 style={{ margin: "0" }}>
+                      {j.title.length >= 40 ? j.title.substring(0,) : j.title}
+                    </h6>
 
-                <div key={key} onClick={() => props.history.push(`/quiz/${j.id}`)}>
-                  <h6 style={{ margin: "0" }}>
-                    {j.title}
-                  </h6>
-
-                  <span style={{ color: "rgba(0,0,0,0.5)" }}>{moment(j.createdat.toDate()).format('L')}</span>
-                  {/* `${classes}${j.my_status}` */}
-                  <div style={{ color: "royalblue" }} >
-                    <span style={{ display: "flex", alignItems: "center" }}>
-                      {/* <Check style={{ fontSize: "30px" }} /> */}
-                      <small>{j.my_status}</small>
-                    </span>
+                    <span style={{ color: "rgba(0,0,0,0.5)" }}>{moment(j.createdat.toDate()).format('L')}</span>
+                    {/* `${classes}${j.my_status}` */}
+                    <div style={{ color: "auto" }} >
+                      <span style={{ display: "flex", alignItems: "center" }}>
+                        {/* <Check style={{ fontSize: "30px" }} /> */}
+                        <small>{j.my_status}</small>
+                      </span>
+                    </div>
                   </div>
-
-
-                </div>
+                </Link>
               ) :
                 <img src={image} alt="empty List" height="300px" width="400px" />
               }

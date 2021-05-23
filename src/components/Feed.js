@@ -16,25 +16,29 @@ const Feed = (props) => {
   const classes = useStyles();
 
   const [isToTake, setIsToTake] = useState()
+  const [jobs, setJobs] = useState([])
+  const [loading, setLoading] = useState(false)
 
 
   const override = `
       display:flex;
       align-items:center;
-      justify-content: center;
+      justify-content: center;props
       border-color:red;
       `;
 
-  const openJob = (id) => {
+  const openJob = (j) => {
+    // console.log(j)
+    // (history.push = `/quiz/${j.id}`)
     if (isToTake <= 0) {
       window.alert("You are not allowed to take more jobs based on your Level. Complete atleast on more task in your cart so as to take another")
       return;
     }
     if (isToTake >= 1) {
-      return (window.location.pathname = `/quiz/${id}`)
+      window.location.pathname = `/quiz/${j.id}`
     }
+    console.log(j)
   }
-
 
   useEffect(() => {
     const getData = async () => {
@@ -46,11 +50,11 @@ const Feed = (props) => {
       let data = [];
       firebase.firestore().collection("clients").doc(props.user.uid)
         .collection("jobs")
-        .where("status", "==", "taken")
+        .where("status", "!=", "completed")
         .get()
         .then(r => r.forEach(doc => data.push(doc.data())))
         .then(() => {
-
+          console.log(data.length)
           setIsToTake(handleLevelTasks(level.data().level) - data.length)
         })
       // const filtered = data.data().filter(e => e.status === "taken")
@@ -58,6 +62,21 @@ const Feed = (props) => {
 
     }
 
+    const getJobs = async () => {
+      setLoading(true)
+      await firebase.firestore().collection("jobs")
+        .orderBy("createdat", "desc")
+        .where("status", "==", "waiting")
+        .onSnapshot(snaps => {
+          let data = [];
+          snaps.forEach(item => data.push({ ...item.data(), id: item.id }))
+          console.log(data)
+          setJobs([...data])
+          setLoading(false)
+        })
+    }
+
+    getJobs()
     getData()
   }, [props.user.uid])
 
@@ -105,55 +124,55 @@ const Feed = (props) => {
           Jobs available
         </h5>
         <Grid item sm={12} justifycontent="center">
-          {!props.tasks ?
+          {loading === true ?
             <div style={{ width: "100%", height: "100%", display: "grid", placeItems: "center" }}>
               <ScaleLoader
                 css={override}
                 size={150}
                 color={"royalblue"}
-                loading={!props.tasks}
+                loading={loading}
                 height={60}
                 width={6}
               />
             </div>
             :
-            props.tasks &&
-            props.tasks.map((j) =>
-              j.status === "waiting" && (
-                <div
-                  className={classes.job}
-                  key={j.id}
-                  onClick={() => openJob(j.id)}
-                >
-                  <Avatar style={{ color: '#fff', backgroundColor: "#3fcaaa", width: "60px", height: "60px" }}>
-                    {j.title.charAt(0)}
-                  </Avatar>
-                  <div>
-                    <h6 style={{}}>
-                      {j.title.length > 25
-                        ? `${j.title.substring(0, 30)} . . .`
-                        : j.title}
-                    </h6>
+            jobs &&
+            jobs.map((j) =>
+              // j.status === "waiting" && (
+              <div
+                className={classes.job}
+                key={j.id}
+                onClick={() => openJob(j)}
+              >
+                <Avatar style={{ color: '#fff', backgroundColor: "#3fcaaa", width: "60px", height: "60px" }}>
+                  {j.title.trim().charAt(0)}
+                </Avatar>
+                <div>
+                  <h6 style={{}}>
+                    {j.title.length > 25
+                      ? `${j.title.substring(0, 30)} . . .`
+                      : j.title}
+                  </h6>
 
-                    <p style={{ color: "#3f4aca" }}>
-                      Posted:{" "}
-                      {moment(
-                        j.createdat.toDate()
-                      ).fromNow()}{" "}
-                      <span style={{ color: "grey", fontsize: "12px" }}>
-                        by {j.createdby}
-                      </span>
-                    </p>
-                  </div>
-
-                  <Favorite style={{ color: "#3f4aca" }} />
-                  <p style={{ color: "#656565" }}>
-                    {j.description.length > 30
-                      ? `${j.description.substring(0, 52)} . . .`
-                      : j.description}
+                  <p style={{ color: "#3f4aca" }}>
+                    Posted:{" "}
+                    {moment(
+                      j.createdat.toDate()
+                    ).fromNow()}{" "}
+                    <span style={{ color: "grey", fontsize: "12px" }}>
+                      by {j.createdby}
+                    </span>
                   </p>
                 </div>
-              )
+
+                <Favorite style={{ color: "#3f4aca" }} />
+                <p style={{ color: "#656565" }}>
+                  {j.description.length > 30
+                    ? `${j.description.substring(0, 52)} . . .`
+                    : j.description}
+                </p>
+              </div>
+              // )
             )}
         </Grid>
       </Grid>
@@ -169,15 +188,13 @@ const mapStateToProps = (state) => {
   }
 }
 
-
-
 export default compose(
   connect(mapStateToProps, null),
 
   firestoreConnect(() => [
     {
       collection: "jobs",
-      where: ["status", "==", "waiting"],
+      // where: ["status", "==", "waiting"],
       orderBy: ["createdat", "desc"],
     }
   ])

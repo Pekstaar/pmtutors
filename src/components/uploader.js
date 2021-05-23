@@ -63,7 +63,7 @@ class Upload extends React.Component {
     this.props.setdata({ attachments: [...this.state.downloadData] })
 
     // call update attachments in firebase myjobs
-    this.props.updatedata();
+    // this.props.updatedata();
 
     // progressbar display
     setTimeout(() => this.props.displayProg(false), 3000);
