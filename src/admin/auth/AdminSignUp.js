@@ -39,10 +39,11 @@ export const Register = ({ history }) => {
         window.localStorage.setItem("registrationEmail", email);
 
         fb.auth().sendSignInLinkToEmail(email, config)
-            .then(() => {
+            .then((r) => {
                 NotificationManager.success(
                     `Email sent to ${email}. Click link to complete registration`
                 );
+
 
                 // store email on local storage
 

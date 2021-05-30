@@ -2,6 +2,7 @@
 import "react-notifications/lib/notifications.css";
 import NotificationContainer from "react-notifications/lib/NotificationContainer";
 import { Route, Switch } from "react-router-dom";
+import React from "react"
 
 import Home from './pages/Home'
 import Admin from './admin/Admin'

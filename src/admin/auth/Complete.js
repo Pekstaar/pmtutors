@@ -48,6 +48,9 @@ const Complete = ({ history }) => {
                 // get User id
 
                 let user = fb.auth().currentUser;
+                // user.update({ role: "admin" })
+                // console.log(user)
+
 
                 user.updatePassword(password)
                     .then(() => {
@@ -55,7 +58,6 @@ const Complete = ({ history }) => {
                         history.push("/pmtutorsadmin");
                     });
                 window.localStorage.removeItem("registrationEmail");
-
 
                 // redirect
             }

@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { AppBar, Button, Toolbar, withStyles } from "@material-ui/core";
+import { AppBar, Button, IconButton, Toolbar, withStyles } from "@material-ui/core";
 import {
   Create,
   List,
+  Notifications,
   Search,
 } from "@material-ui/icons";
 import { Link } from "react-router-dom";
@@ -10,6 +11,7 @@ import useStyles from '../../styling/navbar.min.js'
 import { signOut } from "../../store/actions/authAction.js";
 import { connect } from "react-redux";
 import FloatingNav from "./FloatingNav.js";
+import Notifcations from "../../admin/components/Notifcations.js";
 // import { Link } from "react-router-dom";
 // import logout from "../../context/auth_context";
 
@@ -31,7 +33,7 @@ const DefaultNavigation = (props) => {
 
 
   return (
-    <>
+    <div>
       <AppBar className={classes.nav} position={position ? `${position}` : "static"}>
         <Toolbar className={classes.tools}>
           <div className={classes.logo}>
@@ -55,13 +57,13 @@ const DefaultNavigation = (props) => {
             />
           </div>
 
-          <div >
+          <div className="d-flex">
             <Link to="/quiz" className={classes.item}>
-              <Button color="primary">
+              <Button color="primary" className="mt-2">
                 Take Question
               </Button>
             </Link>
-            <Button variant="outlined" onClick={getFloat} style={{ marginLeft: "3em", height: "34px" }} ><List style={{ fontSize: "28px" }} /></Button>
+            <Button variant="outlined" className="mt-2" onClick={getFloat} style={{ marginLeft: "3em", height: "34px" }} ><List style={{ fontSize: "28px" }} /></Button>
             {
               display && display ?
 
@@ -70,9 +72,10 @@ const DefaultNavigation = (props) => {
                 null
             }
           </div>
+
         </Toolbar>
       </AppBar>
-    </>
+    </div>
   );
 };
 

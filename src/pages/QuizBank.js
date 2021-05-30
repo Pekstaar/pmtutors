@@ -5,13 +5,13 @@ import NavBar from "../components/navigation/Navbar";
 // import { firestore } from "../firebase";
 
 const QuizBank = () => {
-  useEffect(() => {});
+  useEffect(() => { });
 
   return (
-    <>
+    <div>
       <NavBar position="sticky" />
       <Feed />
-    </>
+    </div>
   );
 };
 

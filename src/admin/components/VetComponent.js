@@ -138,7 +138,7 @@ const Vet = (props) => {
                     </TableCell>
                   </TableRow>
                 ) : (
-                  <>
+                  <div>
                     {/* {setLoading(false)} */}
                     {props.vet &&
                       props.vet.map((q) => (
@@ -167,7 +167,7 @@ const Vet = (props) => {
                           </TableCell>
                         </TableRow>
                       ))}
-                  </>
+                  </div>
                 )}
               </TableBody>
             </Table>

@@ -27,17 +27,27 @@ const Feed = (props) => {
       border-color:red;
       `;
 
-  const openJob = (j) => {
+  const openJob = async (j) => {
     // console.log(j)
     // (history.push = `/quiz/${j.id}`)
+    const client = await firebase.firestore().collection("clients")
+      .doc(props.user.uid)
+      .get()
+
+
+    if (client.data().status && client.data().status === "disabled") {
+      window.alert("Your account is disabled, Please contact admin for more info")
+      return
+    }
     if (isToTake <= 0) {
       window.alert("You are not allowed to take more jobs based on your Level. Complete atleast on more task in your cart so as to take another")
       return;
     }
-    if (isToTake >= 1) {
-      window.location.pathname = `/quiz/${j.id}`
-    }
-    console.log(j)
+    console.log(client.data().status)
+    // if (isToTake >= 1) {
+    //   window.location.pathname = `/quiz/${j.id}`
+    //   return;
+    // }
   }
 
   useEffect(() => {
@@ -55,7 +65,7 @@ const Feed = (props) => {
         .then(r => r.forEach(doc => data.push(doc.data())))
         .then(() => {
           console.log(data.length)
-          setIsToTake(handleLevelTasks(level.data().level) - data.length)
+          setIsToTake(handleLevelTasks(level.data() && level.data().level) - data.length)
         })
       // const filtered = data.data().filter(e => e.status === "taken")
 

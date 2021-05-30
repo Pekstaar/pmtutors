@@ -156,7 +156,7 @@ const Quiz = (props) => {
   }, [values.status]);
 
   return (
-    <>
+    <div>
       <Navbar position="" />
       <Grid container className={classes.container}>
 
@@ -174,7 +174,7 @@ const Quiz = (props) => {
                 />
               </div>
               :
-              <>
+              <div>
                 {/* details */}
 
                 <Grid
@@ -217,7 +217,7 @@ const Quiz = (props) => {
                   </div>
                   <div>
                     <AccountBalanceWallet />
-              ${parseInt(totalcost / 100)}
+                    {`$${parseInt(totalcost / 100)}`}
                   </div>
                   <div>
                     <Alarm />
@@ -275,7 +275,7 @@ const Quiz = (props) => {
                               )
                             }
                             // doc.downloadURL &&
-                            else if (doc.downloadURL && (doc.tag.includes("octet") || doc.tag.includes("word"))) {
+                            else if (doc.downloadURL && (doc.tag.includes("octet") || doc.tag.includes("word") || doc.tag.includes("pdf"))) {
                               return (
                                 <div style={{ display: "inline-block", padding: "0 1em" }} key={key} >
                                   <a href={`${doc.downloadURL}`} style={{ cursor: "pointer" }}  >
@@ -304,7 +304,7 @@ const Quiz = (props) => {
                         <span >Job complete!</span>&nbsp;&nbsp;&nbsp;
                     </div>
                       :
-                      <>
+                      <div>
                         {
                           values.status && values.status === "submitted" ?
                             <div style={{ backgroundColor: '#4BB543', width: "60%", margin: "auto", padding: ".5em 0", color: "#fff" }}>
@@ -312,7 +312,7 @@ const Quiz = (props) => {
                             </div>
                             :
                             uploadDisplay && (values.status && values.status === "rejected") ? (
-                              <>
+                              <div>
                                 <div style={{ backgroundColor: '#c13441', width: "60%", margin: "auto", padding: ".5em 0", color: "#fff" }}>
                                   <span >Job Rejected! Contact admin for more information</span>&nbsp;&nbsp;&nbsp;
                                 </div>
@@ -360,7 +360,7 @@ const Quiz = (props) => {
                                     <Button onClick={jobSubmission} variant="contained" style={{ backgroundColor: "#4BB543", color: "#fff", padding: "8px 2em" }}>Submit JOB</Button>
                                   </div>
                                 </div>
-                              </>)
+                              </div>)
                               :
                               uploadDisplay ? (
 
@@ -427,14 +427,14 @@ const Quiz = (props) => {
                                     Take Task
                           </Button>
                               )}
-                      </>
+                      </div>
                   }
                 </Grid>
-              </>
+              </div>
           }
         </Grid>
       </Grid>
-    </>
+    </div>
   );
 };
 

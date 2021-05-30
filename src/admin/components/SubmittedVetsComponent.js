@@ -95,7 +95,7 @@ const SubmittedVets = (props) => {
                                     </TableCell>
                                 </TableRow>
                             ) : (
-                                <>
+                                <div>
                                     {props.tests &&
                                         props.tests.map((j, key) => (
                                             <TableRow key={key}>
@@ -117,7 +117,7 @@ const SubmittedVets = (props) => {
                                                 </TableCell>
                                             </TableRow>
                                         ))}
-                                </>
+                                </div>
                             )}
                         </TableBody>
                     </Table>

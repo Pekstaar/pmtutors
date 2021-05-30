@@ -50,10 +50,10 @@ const JobsTable = (props) => {
     }, [])
 
     return (
-        <>
+        <div>
             <Table className={classes.table}>
                 <TableHead>
-                    <TableRow>
+                    <TableRow style={{ color: "white" }}>
                         <TableCell className={classes.head}>Title</TableCell>
                         <TableCell className={classes.head}>Cost(kshs)</TableCell>
                         <TableCell className={classes.head}>Category</TableCell>
@@ -79,51 +79,51 @@ const JobsTable = (props) => {
                             </TableCell>
                         </TableRow>
                     ) : (
-                        <>
-                            {jobs &&
-                                jobs.map((j, key) => (
-                                    <TableRow key={j.id}>
-                                        <TableCell>
-                                            {j.title.length > 22
-                                                ? `${j.title.substring(0, 19)} . . .`
-                                                : j.title}
-                                        </TableCell>
-                                        <TableCell>{j.totalcost} kshs</TableCell>
-                                        <TableCell>{j.category}</TableCell>
-                                        <TableCell>{j.createdby}</TableCell>
-                                        <TableCell>{j.status}</TableCell>
-                                        <TableCell>{j.takenby}</TableCell>
-                                        {/* <TableCell>
+
+                        jobs &&
+                        jobs.map((j, key) => (
+                            <TableRow key={j.id}>
+                                <TableCell>
+                                    {j.title.length > 22
+                                        ? `${j.title.substring(0, 19)} . . .`
+                                        : j.title}
+                                </TableCell>
+                                <TableCell>{j.totalcost} kshs</TableCell>
+                                <TableCell>{j.category}</TableCell>
+                                <TableCell>{j.createdby}</TableCell>
+                                <TableCell>{j.status}</TableCell>
+                                <TableCell>{j.takenby}</TableCell>
+                                {/* <TableCell>
                             {ManageJTime(j.timestamp, "date")}
                           </TableCell> */}
-                                        <TableCell>{moment(j.createdat && j.createdat.toDate()).calendar()}</TableCell>
-                                        <TableCell>
-                                            <IconButton
-                                                onClick={() => props.getOneJob(j.id)}
-                                                color="primary"
-                                                aria-label="Update Customer"
-                                                disabled={j.status === "taken" ? false : j.status === "waiting" ? false : false}
-                                            >
-                                                <Edit />
-                                            </IconButton>
+                                <TableCell>{moment(j.createdat && j.createdat.toDate()).calendar()}</TableCell>
+                                <TableCell>
+                                    <IconButton
+                                        onClick={() => props.getOneJob(j.id)}
+                                        color="primary"
+                                        aria-label="Update Customer"
+                                        disabled={j.status === "taken" ? false : j.status === "waiting" ? false : false}
+                                    >
+                                        <Edit />
+                                    </IconButton>
 
-                                            <IconButton
-                                                onClick={() =>
-                                                    window.confirm("Delete Job Item?") ? props.removeJob(j.id) : ""
-                                                }
-                                                color="secondary"
-                                                aria-label="Update Customer"
-                                            >
-                                                <Delete />
-                                            </IconButton>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                        </>
+                                    <IconButton
+                                        onClick={() =>
+                                            window.confirm("Delete Job Item?") ? props.removeJob(j.id) : ""
+                                        }
+                                        color="secondary"
+                                        aria-label="Update Customer"
+                                    >
+                                        <Delete />
+                                    </IconButton>
+                                </TableCell>
+                            </TableRow>
+                        ))
+
                     )}
                 </TableBody>
             </Table>
-        </>
+        </div >
     )
 }
 

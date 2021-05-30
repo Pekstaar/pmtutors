@@ -74,7 +74,7 @@ const JobSubmitted = (props) => {
                     props.createPayment({
                         title: state.jobtitle,
                         tutor: doc.data().username,
-                        balance: (parseInt(state.totalcost))
+                        balance: (parseInt(state.totalcost, 10))
                     }, slug)
 
                     // update personal jobs in cart
@@ -95,7 +95,7 @@ const JobSubmitted = (props) => {
                         .set({
                             title: state.jobtitle,
                             tutor: doc.data().username,
-                            balance: (parseInt(state.totalcost)),
+                            balance: (parseInt(state.totalcost, 10)),
                             settledat: new Date()
                         })
                         .then(() => console.log("data added to my-transactions successfully"))
@@ -104,7 +104,7 @@ const JobSubmitted = (props) => {
                         .then(() => console.log("Submission db updated successfully."))
 
                     // update my total balance
-                    firestore.collection("clients").doc(doc.id).update({ balance: (parseInt(state.totalcost) + parseInt(doc.data().balance)) })
+                    firestore.collection("clients").doc(doc.id).update({ balance: (parseInt(state.totalcost, 10) + parseInt(doc.data().balance, 10)) })
                 });
             })
 
@@ -120,6 +120,8 @@ const JobSubmitted = (props) => {
             .then(() => console.log("jobs - job updated successfully"))
             .catch(e => { throw e })
 
+        NotificationManager.success("Job Approved")
+        props.history.push("/pmtutorsadmin/jobs")
 
     }
 
@@ -146,8 +148,14 @@ const JobSubmitted = (props) => {
                 status: "rejected",
                 // my_status: "complete"
             })
-            .then(() => console.log("jobs - job updated successfully"))
+            .then(() => {
+                console.log("jobs - job updated successfully")
+                NotificationManager.warning("Job rejected")
+                props.history.push("/pmtutorsadmin/jobs")
+            })
             .catch(e => { throw e })
+
+
     }
 
     useEffect(() => {
@@ -176,6 +184,10 @@ const JobSubmitted = (props) => {
         // setLoading(false)
         getJob()
         getPayment()
+
+        // return () => {
+        //     setPayment("")
+        // }
     })
 
     return (
@@ -197,7 +209,7 @@ const JobSubmitted = (props) => {
                         </div>
                         <div>
                             <AccountBalanceWallet />
-                             ${parseInt(state.totalcost / 100)}
+                             ${parseInt((state.totalcost / 100), 10)}
                         </div>
                         <div>
                             <Event />
@@ -252,17 +264,17 @@ const JobSubmitted = (props) => {
                                             <span className="m-auto">Job Approved!&nbsp;&nbsp;&nbsp;<DoneAll style={{ fontSize: "35px" }} /></span>
                                         </div>
                                         <div className="col-3 d-flex gap-2 justify-content-around align-items-center">
-                                            <Button disabled={payment && payment.status && payment.status === "settled"} onClick={() => settleBalance(slug, state)} variant="outlined" color="primary">
-                                                {payment && payment.status === "settled" ?
-                                                    <>
+                                            <Button style={{ minWidth: "280px" }} disabled={payment && payment.status && payment.status === "settled"} onClick={() => { settleBalance(slug, state); props.history.push("/pmtutorsadmin/jobs") }} variant="outlined" color="primary">
+                                                {payment && payment.status && payment.status === "settled" ?
+                                                    <div>
                                                         Balance Settled:
                                                         <span style={{ fontSize: "18px" }}> &nbsp;{`  ${state.totalcost}`}</span>
-                                                    </>
+                                                    </div>
                                                     :
-                                                    <>
+                                                    <div>
                                                         Settle Balance:
                                                         <span style={{ fontSize: "18px" }}> &nbsp;{`  ${state.totalcost}`}</span>
-                                                    </>
+                                                    </div>
 
                                                 }
                                             </Button>
@@ -299,7 +311,7 @@ const mapDispatchToProps = (dispatch) => {
 
 export default connect(null, mapDispatchToProps)(JobSubmitted);
 
-export const settleBalance = async (slug, state, setPayment) => {
+export const settleBalance = async (slug, state) => {
     if (window.confirm(`Are You sure you want to Settle ${state.totalcost} Balance? `)) {
         const clientDb = fb.firestore().collection("clients")
         const payment = fb.firestore().collection("payments")
@@ -308,9 +320,10 @@ export const settleBalance = async (slug, state, setPayment) => {
         // console.log(data.data().tutor)
 
         let list = []
-        clients.forEach(e => list.push({ username: e.data().username, id: e.id }))
+        clients.forEach(e => list.push({ username: e.data().username, id: e.id, balance: e.data().balance }))
         // setPayment(list)
         const client = list.find(d => d.username === data.data().tutor)
+        const bal = (parseInt(client.balance, 10) - parseInt(state.totalcost, 10))
         // console.log(client)
 
         // update payment db to settled
@@ -319,6 +332,7 @@ export const settleBalance = async (slug, state, setPayment) => {
             console.log("payment db update successful to settled!")
 
             await clientDb.doc(client.id).collection("mytransactions").doc(slug).update({ status: "settled" })
+            await clientDb.doc(client.id).update({ balance: bal })
             console.log("mytransactionDB updated successfully")
             NotificationManager.success("Balance settled Successfully!")
         }

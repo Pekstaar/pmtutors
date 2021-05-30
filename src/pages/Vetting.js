@@ -94,14 +94,14 @@ const Vetting = (props) => {
     }, [auth.uid]);
 
     return (
-        auth && !auth.uid ? <Redirect to="/login" /> : <>
+        auth && !auth.uid ? <Redirect to="/login" /> : <div>
             {
                 client && client.level && client.level === "beginner" ?
-                    <>
+                    <div>
                         {NotificationManager.success("You were approved!")}
                         {window.localStorage.removeItem("question")}
                         < Redirect to="/profile" />
-                    </>
+                    </div>
                     :
                     < div style={{
                         backgroundImage: `linear-gradient(to bottom, rgba(245, 246, 252, 0.52), rgba(190, 20, 93, 0.63)), url(${img})`, backgroundRepeat: "no-repeat",
@@ -150,14 +150,14 @@ const Vetting = (props) => {
                                     {
                                         attachments ?
                                             client && client.level === "to_vet" ?
-                                                <>
+                                                <div>
                                                     <br />
                                                     <div style={{ textAlign: "center", padding: ".5em", backgroundColor: 'rgba(0,0,0,0.2)', fontWeight: "lighter", fontStyle: "italic", fontFamily: "Roboto" }}>
                                                         <p> Await approval of your uploaded test by pmtutors admin <br /> approval may take 12-24 hours <br /> <strong>Thankyou!</strong></p>
                                                     </div>
-                                                </>
+                                                </div>
                                                 :
-                                                <>
+                                                <div>
                                                     <br />
                                                     <div style={{ textAlign: "center", padding: ".5em", backgroundColor: 'rgba(0,0,0,0.2)', fontWeight: "lighter", fontStyle: "italic", fontFamily: "Roboto" }}>
                                                         <p> Please Check your email for more information about your task
@@ -166,9 +166,9 @@ const Vetting = (props) => {
                                             <br />
                                                             <strong>Contact us: pmtutors@gmail.com</strong></p>
                                                     </div>
-                                                </>
+                                                </div>
                                             :
-                                            <>
+                                            <div>
                                                 <span style={{ backgroundColor: "rgba(0,0,0,0.2)", fontWeight: "bold", margin: "0 2em" }}>
                                                     <strong>YOUR TASK:</strong> <u>{task}</u>
                                                 </span>
@@ -222,14 +222,14 @@ const Vetting = (props) => {
                                                     :
                                                     ""
                                                 }
-                                            </>
+                                            </div>
                                     }
                                 </Paper>
                             </Grid>
                         </Container>
                     </ div>
             }
-        </>
+        </div>
     );
 };
 const mapStateToProps = (state) => {

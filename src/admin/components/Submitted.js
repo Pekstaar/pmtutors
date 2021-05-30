@@ -70,32 +70,30 @@ const Submitted = (props) => {
                             </TableCell>
                         </TableRow>
                     ) : (
-                        <>
-                            {props.jobs &&
-                                props.jobs.map((j, key) => (
-                                    <TableRow key={key}>
-                                        <TableCell>
-                                            {j.jobtitle.length > 22
-                                                ? `${j.jobtitle.substring(0, 19)} . . .`
-                                                : j.jobtitle}
-                                        </TableCell>
-                                        <TableCell>{j.category}</TableCell>
-                                        <TableCell>{j.totalcost} kshs</TableCell>
-                                        <TableCell>{j.submittedby}</TableCell>
-                                        <TableCell>{moment(j.submittedat.toDate()).calendar()}</TableCell>
-                                        <TableCell>
-                                            <Link to={`/pmtutorsadmin/jobs/submitted/${j.id}`}>
-                                                <IconButton
-                                                    color="primary"
-                                                    aria-label="View Job"
-                                                >
-                                                    <Visibility />
-                                                </IconButton>
-                                            </Link>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                        </>
+                        props.jobs &&
+                        props.jobs.map((j, key) => (
+                            <TableRow key={key}>
+                                <TableCell>
+                                    {j.jobtitle.length > 22
+                                        ? `${j.jobtitle.substring(0, 19)} . . .`
+                                        : j.jobtitle}
+                                </TableCell>
+                                <TableCell>{j.category}</TableCell>
+                                <TableCell>{j.totalcost} kshs</TableCell>
+                                <TableCell>{j.submittedby}</TableCell>
+                                <TableCell>{moment(j.submittedat.toDate()).calendar()}</TableCell>
+                                <TableCell>
+                                    <Link to={`/pmtutorsadmin/jobs/submitted/${j.id}`}>
+                                        <IconButton
+                                            color="primary"
+                                            aria-label="View Job"
+                                        >
+                                            <Visibility />
+                                        </IconButton>
+                                    </Link>
+                                </TableCell>
+                            </TableRow>
+                        ))
                     )}
                 </TableBody>
             </Table>

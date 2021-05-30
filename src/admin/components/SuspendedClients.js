@@ -6,7 +6,7 @@ import {
     TableHead,
     TableRow,
 } from "@material-ui/core";
-import { PersonAddDisabled } from "@material-ui/icons";
+import { PersonAdd } from "@material-ui/icons";
 import React from "react";
 import ScaleLoader from "react-spinners/ScaleLoader";
 import useStyles from "../css/job.min.js"
@@ -18,17 +18,17 @@ import { NotificationManager } from "react-notifications";
 import { connect } from "react-redux";// file styling
 // import admin from "firebase-admin"
 
-const ClientsTable = (props) => {
+const SuspendedClients = (props) => {
     const classes = useStyles();
 
-    //   disable account funcition
-    const disableAccount = (id) => {
-        fb.firestore().collection("clients").doc(id).update({ status: "disabled" })
-            .then(() => NotificationManager.success("Account Disabled!"))
-            .catch(e => NotificationManager.error(e.message, "Account Disable Error!"))
-    }
+    const clients = props.clients && props.clients.filter((c) => c.status && c.status === "disabled")
 
-    const clients = props.clients && props.clients.filter((c) => c.status && c.status === "active")
+    //   disable account funcition
+    const enableAccount = (id) => {
+        fb.firestore().collection("clients").doc(id).update({ status: "active" })
+            .then(() => NotificationManager.success("Account activated!"))
+            .catch(e => NotificationManager.error(e.message, "Account Activation Error!"))
+    }
 
 
     const override = `
@@ -48,7 +48,7 @@ const ClientsTable = (props) => {
                     <TableCell className={classes.head}>Username</TableCell>
                     <TableCell className={classes.head}>Institute</TableCell>
                     <TableCell className={classes.head}>Date Joined</TableCell>
-                    <TableCell className={classes.head}>Disable</TableCell>
+                    <TableCell className={classes.head}>Enable</TableCell>
                 </TableRow>
             </TableHead>
             <TableBody>
@@ -75,12 +75,12 @@ const ClientsTable = (props) => {
                             <TableCell>{moment(j.createdat.toDate()).calendar()}</TableCell>
                             <TableCell>
                                 <IconButton
-                                    onClick={() => disableAccount(j.id)}
+                                    onClick={() => enableAccount(j.id)}
                                     color="primary"
                                     aria-label="Disable Account"
                                     variable="outlined"
                                 >
-                                    <PersonAddDisabled />
+                                    <PersonAdd />
                                 </IconButton>
 
                             </TableCell>
@@ -107,7 +107,6 @@ export default compose(
         {
             collection: "clients",
             orderBy: ["createdat", "desc"],
-            // where: ["status", "==", "active"],
         }
     ])
-)(ClientsTable);
+)(SuspendedClients);

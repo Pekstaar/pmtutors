@@ -24,18 +24,18 @@ const PageHeader = (props) => {
         </div>
       </div>
       {props.displayButtons ?
-        <>
+        <div>
           <Link style={{ textDecoration: "none" }} to="/pmtutorsadmin/jobs"><Button style={{ height: "50px" }} variant="contained" color="secondary" >Manage Jobs</Button></Link>
           <Link style={{ textDecoration: "none" }} to="/pmtutorsadmin/jobs/submitted"><Button style={{ height: "50px" }} variant="contained" color="primary">Submitted Jobs</Button></Link>
-        </>
+        </div>
         :
         ""
       }
       {props.displayVetButtons ?
-        <>
+        <div>
           <Link style={{ textDecoration: "none" }} to="/pmtutorsadmin/vets"><Button style={{ height: "50px" }} variant="contained" color="secondary" >Manage Test questions</Button></Link>
           <Link style={{ textDecoration: "none" }} to="/pmtutorsadmin/vets/submitted"><Button style={{ height: "50px" }} variant="contained" color="primary">Submitted Tests</Button></Link>
-        </>
+        </div>
         :
         ""
       }

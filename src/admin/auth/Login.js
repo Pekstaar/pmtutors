@@ -96,10 +96,10 @@ const Login = ({ history }) => {
                     {loading ? (
                         <h5 className="float-center mx-3 text-warning ">Loading...</h5>
                     ) : (
-                        <>
+                        <div>
                             <h5 className="float-center mx-3">SIGN-IN</h5>
                             <span style={{ fontStyle: "italic" }}>pmtutors Admin</span>
-                        </>
+                        </div>
                     )}
 
                     {loginForm()}

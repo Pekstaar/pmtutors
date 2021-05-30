@@ -35,7 +35,7 @@ const Dashboard = (props) => {
   const { username, email, skills } = state;
 
   return (
-    <>
+    <div>
       <Navbar />
       <Grid container className={classes.container}>
         <Grid
@@ -243,7 +243,7 @@ const Dashboard = (props) => {
           </Grid>
         </Grid>
       </Grid>
-    </>
+    </div>
   );
 };
 

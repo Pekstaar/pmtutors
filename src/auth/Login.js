@@ -64,8 +64,8 @@ const Login = (props) => {
     getLevel()
   }, [])
   return (
-    isLoading && <>
-      { (auth && auth.uid) ?
+    isLoading && <div>
+      {(auth && auth.uid) ?
         (level && level === "to_vet") || (level && level === "vet_declined") ?
           < Redirect to="/vetting" />
           :
@@ -179,7 +179,7 @@ const Login = (props) => {
           </Container>
         </div>
       }
-    </>
+    </div>
   );
 };
 

@@ -70,7 +70,7 @@ const SignUp = ({ history, signUp }) => {
   }, [])
 
   return (
-    isLoading && <>
+    isLoading && <div>
       {
         firebase.auth && firebase.auth.uid ?
           (level && level === "to_vet") || (level && level === "vet_declined") ?
@@ -238,7 +238,7 @@ const SignUp = ({ history, signUp }) => {
             </Container>
           </div>
       }
-    </>
+    </div>
   );
 };
 

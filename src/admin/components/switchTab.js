@@ -7,6 +7,7 @@ import Tab from '@material-ui/core/Tab';
 import JobsTable from './JobsTable';
 import Submitted from './Submitted';
 import ClientsTable from './clientsTable';
+import SuspendedClients from './SuspendedClients';
 
 function TabPanel(props) {
     const { page, children, value, index, ...other } = props;
@@ -72,7 +73,6 @@ export default function NavTabs(props) {
         <div className={classes.root}>
             <AppBar position="static" style={{ backgroundColor: "white", color: "#000", boxShadow: "none" }}>
                 {props.page === "jobs" ?
-
                     <Tabs
                         variant="fullWidth"
                         value={value}
@@ -90,7 +90,8 @@ export default function NavTabs(props) {
                             onChange={handleChange}
                             aria-label="nav tabs example"
                         >
-                            <LinkTab label="All Clients" href="/clients" {...a11yProps(0)} />
+                            <LinkTab label="Active Clients" href="/clients" {...a11yProps(0)} />
+                            <LinkTab label="Suspended Clients" href="/suspended-clients" {...a11yProps(1)} />
 
                             {/* <LinkTab label="Page Three" href="/spam" {...a11yProps(2)} /> */}
                         </Tabs>
@@ -100,18 +101,23 @@ export default function NavTabs(props) {
             </AppBar>
 
             {props.page === "jobs" ?
-                <>
+                <div>
                     <TabPanel value={value} index={0}>
                         <JobsTable getOneJob={props.getOneJob} prop={props.prop} />
                     </TabPanel>
                     <TabPanel value={value} index={1}>
                         <Submitted />
                     </TabPanel>
-                </>
+                </div>
                 : props.page === "clients" ?
-                    <TabPanel value={value} index={0}>
-                        <ClientsTable />
-                    </TabPanel>
+                    <div>
+                        <TabPanel value={value} index={0}>
+                            <ClientsTable />
+                        </TabPanel>
+                        <TabPanel value={value} index={1}>
+                            <SuspendedClients />
+                        </TabPanel>
+                    </div>
                     :
                     ""
             }

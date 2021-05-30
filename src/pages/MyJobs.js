@@ -35,7 +35,7 @@ const MyJobs = (props) => {
 
   // context
   const getJobs = async () => {
-    const events = await fb.firestore().collection('clients').doc(props.user.uid).collection("jobs")
+    const events = await fb.firestore().collection('clients').doc(props.user.uid).collection("jobs").orderBy("createdat", "desc")
 
     events.get().then((querySnapshot) => {
       const tempDoc = querySnapshot.docs.map((doc) => {
@@ -52,7 +52,7 @@ const MyJobs = (props) => {
 
 
   return (
-    <>
+    <div>
       <Navbar />
       <Grid container className={classes.container}>
         <Grid
@@ -100,7 +100,7 @@ const MyJobs = (props) => {
           </Grid>
         </Grid>
       </Grid>
-    </>
+    </div>
   );
 };
 

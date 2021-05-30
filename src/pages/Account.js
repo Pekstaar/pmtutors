@@ -79,7 +79,7 @@ const Account = () => {
 
         const getTransactions = async () => {
             let list = []
-            const ts = await fb.firestore().collection("clients").doc(auth.uid).collection("mytransactions").limit(12).get()
+            const ts = await fb.firestore().collection("clients").doc(auth.uid).collection("mytransactions").orderBy("settledat", "desc").limit(12).get()
             ts.forEach(doc => {
                 list.push(doc.data())
             })
@@ -188,7 +188,7 @@ const Account = () => {
                             <div className="col-10 mx-auto slab alert bg-success text-white transactions" key={key}>
                                 <span>{doc.title}</span>
                                 <span>{doc.balance}</span>
-                                <span>{doc.status ? doc.status : "settled"}</span>
+                                <span>{doc.status ? doc.status : "pending"}</span>
                             </div>
                         ))
                             :

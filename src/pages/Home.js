@@ -16,7 +16,7 @@ import { Link } from 'react-router-dom';
 
 const Home = () => {
     return (
-        <>
+        <div>
             {/* <!-- Site Navigaiton --> */}
             <nav id="" className="navbar navbar-expand-lg shadow-sm navbar-light bg-light position-sticky">
                 <div className="container-fluid nav-container ">
@@ -390,7 +390,7 @@ const Home = () => {
                 </div>
             </section>
 
-        </>
+        </div>
 
     )
 }
